@@ -24,7 +24,8 @@ function renderRegions() {
   }).join('');
 }
 
-function openRegion(regionId) {
+function openRegion(regionId, skipHash = false) {
+  if (!skipHash) { currentRoute = 'region-' + regionId; window.location.hash = currentRoute; }
   const l = currentLang;
   const r = regions.find(x => x.id === regionId);
   if (!r) return;
@@ -58,7 +59,8 @@ function openRegion(regionId) {
   window._currentRegionId = regionId;
 }
 
-function showRegions() {
+function showRegions(skipHash = false) {
+  if (!skipHash) { currentRoute = 'home'; window.location.hash = currentRoute; }
   document.getElementById('regionSitesView').style.display = 'none';
   document.getElementById('regionsView').style.display = '';
   window._currentRegionId = null;
@@ -126,7 +128,8 @@ function renderMuseums() {
   `).join('');
 }
 
-function openDetail(id) {
+function openDetail(id, skipHash = false) {
+  if (!skipHash) { currentRoute = 'site-' + id; window.location.hash = currentRoute; }
   const s = sites.find(x => x.id === id);
   const l = currentLang;
   const t = T[l];
@@ -529,10 +532,20 @@ function closeInnerPlace() {
 function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('active');
   document.body.style.overflow = '';
+  
+  // Try to go back safely without ruining history if we came directly
+  const sId = window.location.hash.replace('#site-', '');
+  const s = sites.find(x => x.id === sId);
+  if (s) {
+    currentRoute = 'region-' + s.region; window.location.hash = currentRoute;
+  } else {
+    currentRoute = 'home'; window.location.hash = currentRoute;
+  }
 }
 
 // ===== SECTION NAV =====
-function showSection(name) {
+function showSection(name, skipHash = false) {
+  if (!skipHash) { currentRoute = name; window.location.hash = currentRoute; }
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
@@ -543,7 +556,7 @@ function showSection(name) {
   setTimeout(() => {
     document.querySelectorAll('#sec-' + name + ' .fade-in').forEach(el => el.classList.add('visible'));
   }, 100);
-  if (name === 'home') showRegions();
+  if (name === 'home') showRegions(true);
   if (name === 'civs') renderCivs();
   if (name === 'museums') renderMuseums();
 }
@@ -602,15 +615,47 @@ function setLang(lang) {
 // ===== INIT =====
 renderRegions();
 
-// Cursor
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
-document.addEventListener('click', () => { cursor.style.transform = 'translate(-50%,-50%) scale(0.7)'; setTimeout(() => cursor.style.transform = '', 150); });
+// ===== ROUTER =====
+let currentRoute = "";
+function handleRoute() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === currentRoute) return;
+  currentRoute = hash;
+  if (!hash) {
+    showSection('home', true);
+    return;
+  }
+  
+  // Close any open innerPlace if we are navigating backwards
+  closeInnerPlace();
 
-// Hover cursor
-document.addEventListener('mouseover', e => {
-  if (e.target.closest('a,button,.site-card,.region-card,.gallery-img,.civ-card,.museum-card')) cursor.classList.add('hover');
-  else cursor.classList.remove('hover');
+  if (['home', 'civs', 'museums', 'about'].includes(hash)) {
+    document.getElementById('detailOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    showSection(hash, true);
+  } else if (hash.startsWith('region-')) {
+    document.getElementById('detailOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    const rId = hash.replace('region-', '');
+    showSection('home', true);
+    openRegion(rId, true);
+  } else if (hash.startsWith('site-')) {
+    const sId = hash.replace('site-', '');
+    const s = sites.find(x => x.id === sId);
+    if (s) {
+      showSection('home', true);
+      openRegion(s.region, true);
+      openDetail(sId, true);
+    }
+  }
+}
+
+window.addEventListener('hashchange', handleRoute);
+// Trigger on initial load
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.location.hash) {
+    handleRoute();
+  }
 });
 
 // Scroll effects
