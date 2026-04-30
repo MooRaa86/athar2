@@ -198,7 +198,10 @@
   <!-- LIGHTBOX OVERLAY -->
   <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <img class="lightbox-img" id="lightboxImg" src="" alt="Full Screen Image">
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
+    <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="Full Screen Image" onclick="event.stopPropagation()">
   </div>
 
   <!-- ===== EXTERNAL SCRIPTS ===== -->

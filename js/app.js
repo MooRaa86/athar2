@@ -686,13 +686,66 @@ document.addEventListener('keydown', e => {
 });
 
 // ===== GLOBAL LIGHTBOX FOR IMAGES =====
-function openLightbox(src) {
+let currentLightboxGallery = [];
+let currentLightboxIndex = 0;
+let touchStartX = 0;
+let touchEndX = 0;
+
+function openLightbox(src, gallery = null, index = 0) {
   const lb = document.getElementById('lightboxOverlay');
   const img = document.getElementById('lightboxImg');
   if (lb && img) {
+    if (gallery && gallery.length > 0) {
+      currentLightboxGallery = gallery;
+      currentLightboxIndex = index;
+    } else {
+      const clickedImg = Array.from(document.querySelectorAll('img[src*="images/"]')).find(img => img.src === src);
+      if (clickedImg) {
+        const parent = clickedImg.closest('.detail-gallery, .ipp-gallery, .inner-place-panel, .gallery-grid');
+        if (parent) {
+          const siblings = Array.from(parent.querySelectorAll('img[src*="images/"]'));
+          currentLightboxGallery = siblings.map(img => img.src);
+          currentLightboxIndex = currentLightboxGallery.indexOf(src);
+        } else {
+          currentLightboxGallery = [src];
+          currentLightboxIndex = 0;
+        }
+      } else {
+        currentLightboxGallery = [src];
+        currentLightboxIndex = 0;
+      }
+    }
+    
     img.src = src;
     lb.classList.add('active');
+    updateLightboxUI();
   }
+}
+
+function navigateLightbox(direction) {
+  if (currentLightboxGallery.length <= 1) return;
+  const newIndex = currentLightboxIndex + direction;
+  if (newIndex >= 0 && newIndex < currentLightboxGallery.length) {
+    currentLightboxIndex = newIndex;
+    const img = document.getElementById('lightboxImg');
+    if (img) {
+      img.style.opacity = '0.5';
+      setTimeout(() => {
+        img.src = currentLightboxGallery[currentLightboxIndex];
+        img.style.opacity = '1';
+      }, 150);
+    }
+    updateLightboxUI();
+  }
+}
+
+function updateLightboxUI() {
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+  const counter = document.getElementById('lightboxCounter');
+  if (prevBtn) prevBtn.disabled = currentLightboxIndex <= 0;
+  if (nextBtn) nextBtn.disabled = currentLightboxIndex >= currentLightboxGallery.length - 1;
+  if (counter) counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxGallery.length}`;
 }
 
 function closeLightbox() {
@@ -701,16 +754,56 @@ function closeLightbox() {
     lb.classList.remove('active');
     setTimeout(() => {
       document.getElementById('lightboxImg').src = '';
-    }, 300); // clear after animation
+      currentLightboxGallery = [];
+      currentLightboxIndex = 0;
+    }, 300);
   }
 }
 
-// Global click listener for any image in the page that has src starting with 'images/'
 document.addEventListener('click', e => {
   if (e.target.tagName === 'IMG' && e.target.src && e.target.src.includes('images/')) {
-    // Exclude header logo or other UI images if needed, but here we assume all 'images/' are content images
     if (!e.target.closest('.lightbox-overlay')) {
       openLightbox(e.target.src);
     }
   }
 });
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      navigateLightbox(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      navigateLightbox(1);
+    }
+  }
+});
+
+document.addEventListener('touchstart', e => {
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleLightboxSwipe();
+  }
+}, { passive: true });
+
+function handleLightboxSwipe() {
+  const swipeThreshold = 50;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > swipeThreshold) {
+    if (diff > 0) {
+      navigateLightbox(1);
+    } else {
+      navigateLightbox(-1);
+    }
+  }
+}
