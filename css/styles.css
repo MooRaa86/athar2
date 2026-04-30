@@ -1425,6 +1425,67 @@
         object-fit: cover;
       }
 
+      /* Fix card text sizing for mobile */
+      .card-content {
+        padding: 0.9rem;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        line-height: 1.3;
+        margin-bottom: 0.25rem;
+      }
+
+      .site-card.wide .card-title {
+        font-size: 1.1rem;
+        line-height: 1.3;
+      }
+
+      .card-era {
+        font-size: 0.55rem;
+        padding: 0.1rem 0.4rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .card-loc {
+        font-size: 0.65rem;
+        letter-spacing: 0.05em;
+      }
+
+      .card-glyph {
+        font-size: 1.2rem;
+        top: 0.6rem;
+        right: 0.6rem;
+      }
+
+      .card-cat {
+        font-size: 0.55rem;
+        top: 0.6rem;
+        right: 2.2rem;
+        padding: 0.15rem 0.4rem;
+      }
+
+      .card-arrow {
+        width: 26px;
+        height: 26px;
+        top: 0.6rem;
+        left: 0.6rem;
+        font-size: 0.85rem;
+      }
+
+      .card-meta {
+        gap: 0.7rem;
+        margin-top: 0.5rem;
+      }
+
+      .meta-v {
+        font-size: 0.7rem;
+      }
+
+      .meta-l {
+        font-size: 0.55rem;
+      }
+
       .detail-hero {
         height: 38vh;
         min-height: 220px;
