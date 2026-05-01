@@ -213,13 +213,13 @@ function openDetail(id, skipHash = false) {
       <div class="detail-section-hd"><span class="detail-section-glyph">𓉐</span><h3>${lbl.places}</h3></div>
       <div class="detail-places-grid">
         ${places.map((p, idx) => `
-          <div class="detail-place-card ${p.images ? 'clickable' : ''}" ${p.images ? `onclick="openInnerPlace('${s.id}', ${idx})"` : ''}>
+          <div class="detail-place-card clickable" onclick="openInnerPlace('${s.id}', ${idx})">
             ${p.images && p.images[0] ? `<div class="place-card-img-wrap"><img class="place-card-img" src="${p.images[0]}" loading="lazy" alt="${p.title}"><div class="place-card-img-overlay"></div></div>` : ''}
             <div class="place-card-body">
               <span class="detail-place-icon">${p.icon}</span>
               <div class="detail-place-title">${p.title}</div>
               <p class="detail-place-text">${p.text.substring(0, 100)}${p.text.length > 100 ? '...' : ''}</p>
-              ${p.images ? `<span class="place-card-cta">${currentLang === 'ar' ? 'عرض التفاصيل ←' : '查看详情 →'}</span>` : ''}
+              <span class="place-card-cta">${currentLang === 'ar' ? 'عرض التفاصيل ←' : '查看详情 →'}</span>
             </div>
           </div>`).join('')}
       </div>` : ''}
@@ -477,7 +477,7 @@ function openInnerPlace(siteId, placeIdx) {
   if (!s || !s.innerPlaces) return;
   const l = currentLang;
   const place = s.innerPlaces[l][placeIdx];
-  if (!place || !place.images) return;
+  if (!place) return;
 
   const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
   const backLbl = l === 'ar' ? '→ العودة' : '← 返回';
@@ -494,11 +494,11 @@ function openInnerPlace(siteId, placeIdx) {
 
   panel.innerHTML = `
         <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
-        <div class="ipp-hero">
-          <img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}">
+        <div class="ipp-hero" style="${(place.images && place.images.length > 0) ? '' : 'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px;'}">
+          ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}">` : ''}
           <div class="ipp-hero-overlay"></div>
           <div class="ipp-hero-content">
-            <span class="ipp-hero-icon">${place.icon}</span>
+            <span class="ipp-hero-icon" style="${(place.images && place.images.length > 0) ? '' : 'font-size: 64px; display: block; margin-bottom: 15px;'}">${place.icon}</span>
             <h1 class="ipp-hero-title">${place.title}</h1>
           </div>
         </div>
