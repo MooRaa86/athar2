@@ -52,7 +52,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 200;
+      z-index: 100;
       padding: 1rem 2.5rem;
       display: flex;
       justify-content: space-between;
@@ -2103,14 +2103,18 @@
       top: 0;
       right: -100%;
       width: 280px;
-      height: 100vh;
-      background: rgba(13, 10, 5, 0.98);
+      height: 100%;
+      min-height: 100vh;
+      background: #0d0a05;
       border-left: 1px solid rgba(201,168,76,0.2);
-      z-index: 1000;
+      z-index: 10000;
       transition: right 0.4s ease;
       display: flex;
       flex-direction: column;
       padding: 1.5rem;
+      box-sizing: border-box;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
     html[dir="ltr"] .mobile-sidebar {
       right: auto;
@@ -2129,9 +2133,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       padding-bottom: 1rem;
       border-bottom: 1px solid rgba(201,168,76,0.15);
+      flex-shrink: 0;
+    }
+    #mobile-logo-text {
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
     }
     .mobile-close-btn {
       width: 40px;
@@ -2155,15 +2167,25 @@
       flex-direction: column;
       gap: 0.5rem;
       flex: 1;
+      overflow-y: auto;
+      padding: 1rem 0;
+      background: transparent;
     }
     .mobile-nav-link {
-      color: var(--sand-dark);
+      color: #F2E8D0;
+      color: var(--sand, #F2E8D0);
+      font-family: 'Noto Naskh Arabic', 'Amiri', serif;
       text-decoration: none;
-      padding: 1rem;
+      padding: 1rem 1.2rem;
       font-size: 1rem;
       border-radius: 4px;
       transition: all 0.3s;
       border-right: 2px solid transparent;
+      display: block;
+      white-space: nowrap;
+      opacity: 1;
+      visibility: visible;
+      min-height: 44px;
     }
     html[dir="ltr"] .mobile-nav-link {
       border-right: none;
@@ -2190,12 +2212,17 @@
     }
     .mobile-overlay {
       position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 999;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
     .mobile-overlay.active {
       opacity: 1;
