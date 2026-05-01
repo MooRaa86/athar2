@@ -34,8 +34,35 @@
         <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
         <button class="lang-btn" onclick="setLang('zh')">中文</button>
       </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="القائمة">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </header>
+
+  <!-- ===== MOBILE SIDEBAR ===== -->
+  <div class="mobile-sidebar" id="mobileSidebar">
+    <div class="mobile-sidebar-header">
+      <div class="logo-text" id="mobile-logo-text">أثـر</div>
+      <button class="mobile-close-btn" onclick="toggleMobileMenu()" aria-label="إغلاق">✕</button>
+    </div>
+    <nav class="mobile-nav">
+      <a class="mobile-nav-link" onclick="showSection('home'); toggleMobileMenu();" data-ar="المواقع الأثرية" data-zh="考古遗址">المواقع الأثرية</a>
+      <a class="mobile-nav-link" onclick="showSection('civs'); toggleMobileMenu();" data-ar="الحضارات" data-zh="文明">الحضارات</a>
+      <a class="mobile-nav-link" onclick="showSection('museums'); toggleMobileMenu();" data-ar="المتاحف" data-zh="博物馆">المتاحف</a>
+      <a class="mobile-nav-link" onclick="showSection('about'); toggleMobileMenu();" data-ar="عن الموقع" data-zh="关于我们">عن الموقع</a>
+      <a class="mobile-nav-link" onclick="showSection('team'); toggleMobileMenu();" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</a>
+    </nav>
+    <div class="mobile-sidebar-footer">
+      <div class="lang-switch mobile-lang">
+        <button class="lang-btn" onclick="setLang('ar'); toggleMobileMenu();">عربي</button>
+        <button class="lang-btn" onclick="setLang('zh'); toggleMobileMenu();">中文</button>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
 
   <!-- ===== HOME SECTION ===== -->
   <div class="page-section active" id="sec-home">

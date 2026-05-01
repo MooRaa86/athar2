@@ -595,10 +595,12 @@ function setLang(lang) {
   // Update logo
   document.getElementById('logo-text').textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
   document.getElementById('logo-sub').textContent = lang === 'ar' ? 'حضارات خالدة' : '永恒的文明';
+  const mobileLogo = document.getElementById('mobile-logo-text');
+  if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
 
-  // Update nav links
+  // Update nav links (desktop and mobile)
   document.querySelectorAll('[data-ar]').forEach(el => {
-    if (el.tagName === 'A' || el.classList.contains('nav-link')) {
+    if (el.tagName === 'A' || el.classList.contains('nav-link') || el.classList.contains('mobile-nav-link')) {
       el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.zh;
     }
   });
@@ -631,6 +633,26 @@ function setLang(lang) {
   if (activeSec === 'civs') renderCivs();
   if (activeSec === 'museums') renderMuseums();
   if (activeSec === 'team') renderTeam();
+}
+
+// ===== MOBILE MENU =====
+function toggleMobileMenu() {
+  const sidebar = document.getElementById('mobileSidebar');
+  const overlay = document.getElementById('mobileOverlay');
+  const menuBtn = document.querySelector('.mobile-menu-btn');
+  
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    if (menuBtn) menuBtn.classList.toggle('active');
+    
+    // Prevent body scroll when menu is open
+    if (sidebar.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
 }
 
 // ===== INIT =====
