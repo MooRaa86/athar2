@@ -2060,3 +2060,101 @@
     .ipp-gallery-img, .pg-img, .place-card-img, .gallery-img, .gallery-grid img {
       cursor: zoom-in;
     }
+
+    /* ===== TEAM SECTION ===== */
+    .team-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+    .team-intro {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--sand-dark);
+      margin-bottom: 2.5rem;
+      font-family: 'Amiri', serif;
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .team-card {
+      background: var(--stone);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      text-align: center;
+    }
+    .team-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(201,168,76,0.15);
+      border-color: rgba(201,168,76,0.4);
+    }
+    .team-img-wrap {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(20,16,10,0.8) 0%, rgba(30,24,18,0.9) 100%);
+    }
+    .team-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .team-card:hover .team-img {
+      transform: scale(1.05);
+    }
+    .team-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, rgba(13,10,5,0.8) 100%);
+    }
+    .team-body {
+      padding: 1.5rem;
+    }
+    .team-name-ar {
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 1.1rem;
+      color: var(--sand);
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .team-name-zh {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.2rem;
+      color: var(--gold-light);
+      letter-spacing: 0.1em;
+    }
+    .team-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gold-dark);
+      margin: 0.8rem auto;
+    }
+    @media (max-width: 1200px) {
+      .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+    }
+    @media (max-width: 900px) {
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      .team-img-wrap {
+        height: 240px;
+      }
+    }
+    @media (max-width: 480px) {
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+      .team-img-wrap {
+        height: 300px;
+      }
+    }

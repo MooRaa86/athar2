@@ -128,6 +128,25 @@ function renderMuseums() {
   `).join('');
 }
 
+function renderTeam() {
+  const l = currentLang;
+  const grid = document.getElementById('teamGrid');
+  if (!grid) return;
+  grid.innerHTML = teamMembers.map((member, i) => `
+    <div class="team-card">
+      <div class="team-img-wrap">
+        <img class="team-img" src="${member.img}" alt="${member.nameAr} - ${member.nameZh}" loading="lazy">
+        <div class="team-img-overlay"></div>
+      </div>
+      <div class="team-body">
+        <div class="team-name-ar">${member.nameAr}</div>
+        <div class="team-divider"></div>
+        <div class="team-name-zh">${member.nameZh}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
 function openDetail(id, skipHash = false) {
   if (!skipHash) { currentRoute = 'site-' + id; window.location.hash = currentRoute; }
   const s = sites.find(x => x.id === id);
@@ -549,7 +568,7 @@ function showSection(name, skipHash = false) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-  const idx = { home: 0, civs: 1, museums: 2, about: 3 }[name];
+  const idx = { home: 0, civs: 1, museums: 2, about: 3, team: 4 }[name];
   document.querySelectorAll('.nav-link')[idx]?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   // trigger fade-ins
@@ -559,6 +578,7 @@ function showSection(name, skipHash = false) {
   if (name === 'home') showRegions(true);
   if (name === 'civs') renderCivs();
   if (name === 'museums') renderMuseums();
+  if (name === 'team') renderTeam();
 }
 
 // ===== LANGUAGE =====
@@ -610,6 +630,7 @@ function setLang(lang) {
   const activeSec = document.querySelector('.page-section.active')?.id?.replace('sec-', '');
   if (activeSec === 'civs') renderCivs();
   if (activeSec === 'museums') renderMuseums();
+  if (activeSec === 'team') renderTeam();
 }
 
 // ===== INIT =====
@@ -629,7 +650,7 @@ function handleRoute() {
   // Close any open innerPlace if we are navigating backwards
   closeInnerPlace();
 
-  if (['home', 'civs', 'museums', 'about'].includes(hash)) {
+  if (['home', 'civs', 'museums', 'about', 'team'].includes(hash)) {
     document.getElementById('detailOverlay').classList.remove('active');
     document.body.style.overflow = '';
     showSection(hash, true);
