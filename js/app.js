@@ -41,9 +41,9 @@ function openRegion(regionId, skipHash = false) {
   document.getElementById('regionSitesTitle').textContent = r.title[l];
   const count = regionSites.length;
   document.getElementById('regionSitesCount').textContent =
-    count > 0
-      ? (l === 'ar' ? `${count} ${count === 1 ? 'موقع أثري' : 'مواقع أثرية'}` : `${count} 个考古遗址`)
-      : (l === 'ar' ? 'لا توجد مواقع مضافة بعد' : '暂无遗址');
+      count > 0
+          ? (l === 'ar' ? `${count} ${count === 1 ? 'موقع أثري' : 'مواقع أثرية'}` : `${count} 个考古遗址`)
+          : (l === 'ar' ? 'لا توجد مواقع مضافة بعد' : '暂无遗址');
 
   // Update back button text
   const backSpan = document.querySelector('#regionBackBtn span[data-ar]');
@@ -245,9 +245,9 @@ function openDetail(id, skipHash = false) {
 
       <!-- PYRAMID GROUPS (Giza only) -->
       ${s.pyramidGroups ? (() => {
-      const groups = s.pyramidGroups[l];
-      const groupLbl = l === 'ar' ? 'المجموعات الهرمية الملكية الثلاث' : '三座王室金字塔建筑群';
-      return `
+    const groups = s.pyramidGroups[l];
+    const groupLbl = l === 'ar' ? 'المجموعات الهرمية الملكية الثلاث' : '三座王室金字塔建筑群';
+    return `
       <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${groupLbl}</h3></div>
       <div class="pyramid-groups-wrap">
         ${groups.map(g => `
@@ -270,13 +270,13 @@ function openDetail(id, skipHash = false) {
             </div>
           </div>`).join('')}
       </div>`;
-    })() : ''}
+  })() : ''}
 
       <!-- ARCH ELEMENTS GRID (Giza only) -->
       ${s.archElements ? (() => {
-      const elems = s.archElements[l];
-      const archLbl = l === 'ar' ? 'العناصر المعمارية الثلاثة عشر للمجمع' : '建筑群13个建筑元素';
-      return `
+    const elems = s.archElements[l];
+    const archLbl = l === 'ar' ? 'العناصر المعمارية الثلاثة عشر للمجمع' : '建筑群13个建筑元素';
+    return `
       <div class="detail-section-hd"><span class="detail-section-glyph">𓉐</span><h3>${archLbl}</h3></div>
       <div class="arch-elements-grid">
         ${elems.map(el => `
@@ -287,18 +287,18 @@ function openDetail(id, skipHash = false) {
             <p class="arch-el-desc">${el.desc}</p>
           </div>`).join('')}
       </div>`;
-    })() : ''}
+  })() : ''}
 
       <!-- PYRAMID PASSAGES DETAILED SECTION -->
       ${s.pyramidPassages ? (() => {
-      const pp = s.pyramidPassages[l];
-      const lbls = {
-        ar: { title: 'التخطيط الداخلي التفصيلي للأهرامات', khufu: 'المجموعة الهرمية للملك خوفو — الهرم الأكبر', khafre: 'المجموعة الهرمية للملك خفرع — الهرم الثاني', menkaure: 'المجموعة الهرمية للملك منكاورع — الهرم الثالث', sphinx: 'تمثال أبو الهول — الحارس الصامت', passages: 'الممرات والحجرات الداخلية', complex: 'مجموعة المعابد والطريق الصاعد', sphinxSec: 'أبعاد ومعلومات' },
-        zh: { title: '金字塔详细内部规划', khufu: '胡夫法老金字塔建筑群 — 大金字塔', khafre: '卡夫拉法老金字塔建筑群 — 第二金字塔', menkaure: '孟卡拉法老金字塔建筑群 — 第三金字塔', sphinx: '狮身人面像 — 沉默的守护者', passages: '内部通道与墓室', complex: '神庙群与上升通道', sphinxSec: '尺寸与信息' }
-      }[l];
+    const pp = s.pyramidPassages[l];
+    const lbls = {
+      ar: { title: 'التخطيط الداخلي التفصيلي للأهرامات', khufu: 'المجموعة الهرمية للملك خوفو — الهرم الأكبر', khafre: 'المجموعة الهرمية للملك خفرع — الهرم الثاني', menkaure: 'المجموعة الهرمية للملك منكاورع — الهرم الثالث', sphinx: 'تمثال أبو الهول — الحارس الصامت', passages: 'الممرات والحجرات الداخلية', complex: 'مجموعة المعابد والطريق الصاعد', sphinxSec: 'أبعاد ومعلومات' },
+      zh: { title: '金字塔详细内部规划', khufu: '胡夫法老金字塔建筑群 — 大金字塔', khafre: '卡夫拉法老金字塔建筑群 — 第二金字塔', menkaure: '孟卡拉法老金字塔建筑群 — 第三金字塔', sphinx: '狮身人面像 — 沉默的守护者', passages: '内部通道与墓室', complex: '神庙群与上升通道', sphinxSec: '尺寸与信息' }
+    }[l];
 
-      function renderKing(data) {
-        return `<div class="king-card">
+    function renderKing(data) {
+      return `<div class="king-card">
             <div class="king-seal">𓇼</div>
             <div>
               <div class="king-name">${data.king}</div>
@@ -306,10 +306,10 @@ function openDetail(id, skipHash = false) {
               <p class="king-desc">${data.kingDesc}</p>
             </div>
           </div>`;
-      }
+    }
 
-      function renderPassages(passages) {
-        return `<div class="passage-list">${passages.map(p => `
+    function renderPassages(passages) {
+      return `<div class="passage-list">${passages.map(p => `
             <div class="passage-block${p.reverse ? ' reverse' : ''}">
               <div class="passage-img-wrap">
                 <img class="passage-img" src="${p.img}" loading="lazy" alt="${p.title}">
@@ -321,10 +321,10 @@ function openDetail(id, skipHash = false) {
                 <span class="passage-tag">${p.tag}</span>
               </div>
             </div>`).join('')}</div>`;
-      }
+    }
 
-      function renderComplex(items) {
-        return `<div class="complex-grid">${items.map(c => `
+    function renderComplex(items) {
+      return `<div class="complex-grid">${items.map(c => `
             <div class="complex-card">
               <div class="complex-img-wrap"><img class="complex-img" src="${c.img}" loading="lazy" alt="${c.title}"></div>
               <div class="complex-body">
@@ -332,18 +332,18 @@ function openDetail(id, skipHash = false) {
                 <p class="complex-desc">${c.desc}</p>
               </div>
             </div>`).join('')}</div>`;
-      }
+    }
 
-      function renderSphinx(data) {
-        return `<div class="sphinx-block">
+    function renderSphinx(data) {
+      return `<div class="sphinx-block">
             <div class="sphinx-img-wrap"><img class="sphinx-img" src="images/sphinx_wide.jpg" loading="lazy" alt="${data.king}"></div>
             <div class="sphinx-info">
               ${data.desc.map(d => `<div class="sphinx-info-block"><div class="sphinx-info-title">${d.title}</div><p class="sphinx-info-text">${d.text}</p></div>`).join('')}
             </div>
           </div>`;
-      }
+    }
 
-      return `
+    return `
       <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${lbls.title}</h3></div>
 
       <div class="pyr-section">
@@ -374,7 +374,7 @@ function openDetail(id, skipHash = false) {
         ${renderKing(pp.sphinx)}
         ${renderSphinx(pp.sphinx)}
       </div>`;
-    })() : ''}
+  })() : ''}
 
       <!-- VIDEO -->
       ${s.videoSrc ? `
@@ -551,7 +551,7 @@ function closeInnerPlace() {
 function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('active');
   document.body.style.overflow = '';
-  
+
   // Try to go back safely without ruining history if we came directly
   const sId = window.location.hash.replace('#site-', '');
   const s = sites.find(x => x.id === sId);
@@ -640,12 +640,12 @@ function toggleMobileMenu() {
   const sidebar = document.getElementById('mobileSidebar');
   const overlay = document.getElementById('mobileOverlay');
   const menuBtn = document.querySelector('.mobile-menu-btn');
-  
+
   if (sidebar && overlay) {
     sidebar.classList.toggle('active');
     overlay.classList.toggle('active');
     if (menuBtn) menuBtn.classList.toggle('active');
-    
+
     // Prevent body scroll when menu is open
     if (sidebar.classList.contains('active')) {
       document.body.style.overflow = 'hidden';
@@ -668,7 +668,7 @@ function handleRoute() {
     showSection('home', true);
     return;
   }
-  
+
   // Close any open innerPlace if we are navigating backwards
   closeInnerPlace();
 
@@ -758,7 +758,7 @@ function openLightbox(src, gallery = null, index = 0) {
         currentLightboxIndex = 0;
       }
     }
-    
+
     img.src = src;
     lb.classList.add('active');
     updateLightboxUI();

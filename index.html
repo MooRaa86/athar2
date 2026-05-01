@@ -6,250 +6,250 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>أثر | الحضارات الخالدة</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Serif+SC:wght@400;700&display=swap"
-    rel="stylesheet">
+          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Serif+SC:wght@400;700&display=swap"
+          rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
 
-  <header id="mainHeader">
-    <div class="logo" onclick="showSection('home')">
-      <div class="logo-emblem"></div>
-      <div>
-        <div class="logo-text" id="logo-text">أثـر</div>
-        <div class="logo-sub" data-ar="حضارات خالدة" data-zh="永恒的文明" id="logo-sub">حضارات خالدة</div>
-      </div>
-    </div>
-    <nav>
-      <a class="nav-link active" onclick="showSection('home')" data-ar="المواقع الأثرية" data-zh="考古遗址">المواقع
-        الأثرية</a>
-      <a class="nav-link" onclick="showSection('civs')" data-ar="الحضارات" data-zh="文明">الحضارات</a>
-      <a class="nav-link" onclick="showSection('museums')" data-ar="المتاحف" data-zh="博物馆">المتاحف</a>
-      <a class="nav-link" onclick="showSection('about')" data-ar="عن الموقع" data-zh="关于我们">عن الموقع</a>
-      <a class="nav-link" onclick="showSection('team')" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</a>
-    </nav>
-    <div class="header-right">
-      <div class="lang-switch">
-        <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
-        <button class="lang-btn" onclick="setLang('zh')">中文</button>
-      </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="القائمة">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- ===== MOBILE SIDEBAR ===== -->
-  <div class="mobile-sidebar" id="mobileSidebar">
-    <div class="mobile-sidebar-header">
-      <div class="logo-text" id="mobile-logo-text">أثـر</div>
-      <button class="mobile-close-btn" onclick="toggleMobileMenu()" aria-label="إغلاق">✕</button>
-    </div>
-    <nav class="mobile-nav">
-      <a class="mobile-nav-link" onclick="showSection('home'); toggleMobileMenu();" data-ar="المواقع الأثرية" data-zh="考古遗址">المواقع الأثرية</a>
-      <a class="mobile-nav-link" onclick="showSection('civs'); toggleMobileMenu();" data-ar="الحضارات" data-zh="文明">الحضارات</a>
-      <a class="mobile-nav-link" onclick="showSection('museums'); toggleMobileMenu();" data-ar="المتاحف" data-zh="博物馆">المتاحف</a>
-      <a class="mobile-nav-link" onclick="showSection('about'); toggleMobileMenu();" data-ar="عن الموقع" data-zh="关于我们">عن الموقع</a>
-      <a class="mobile-nav-link" onclick="showSection('team'); toggleMobileMenu();" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</a>
-    </nav>
-    <div class="mobile-sidebar-footer">
-      <div class="lang-switch mobile-lang">
-        <button class="lang-btn" onclick="setLang('ar'); toggleMobileMenu();">عربي</button>
-        <button class="lang-btn" onclick="setLang('zh'); toggleMobileMenu();">中文</button>
-      </div>
+<header id="mainHeader">
+  <div class="logo" onclick="showSection('home')">
+    <div class="logo-emblem"></div>
+    <div>
+      <div class="logo-text" id="logo-text">أثـر</div>
+      <div class="logo-sub" data-ar="حضارات خالدة" data-zh="永恒的文明" id="logo-sub">حضارات خالدة</div>
     </div>
   </div>
-  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
-
-  <!-- ===== HOME SECTION ===== -->
-  <div class="page-section active" id="sec-home">
-    <section class="hero">
-      <div class="hero-bg"></div>
-      <div class="hero-ring"></div>
-      <span class="corner-glyph tr">𓂀</span>
-      <span class="corner-glyph bl">𓅱</span>
-      <div class="hero-content">
-        <p class="hero-eyebrow" data-ar="𓂀  اكتشف إرث الحضارات  𓂀" data-zh="𓂀  探索文明的遗产  𓂀">𓂀 اكتشف إرث الحضارات 𓂀
-        </p>
-        <h1 class="hero-title">
-          <span id="hero-t1" data-ar="الحضارات الخالدة" data-zh="永恒的文明">الحضارات الخالدة</span>
-          <span id="hero-t2" style="font-size:0.65em;color:var(--gold-light)" data-ar="تحكي قصتها"
-            data-zh="讲述它们的故事">تحكي قصتها</span>
-        </h1>
-        <div class="hero-divider"></div>
-        <p class="hero-desc" data-ar="رحلة عبر آلاف السنين لاستكشاف أعظم المواقع الأثرية التي شكّلت تاريخ الإنسانية"
-          data-zh="穿越数千年的旅程，探索塑造人类历史的最伟大考古遗址">رحلة عبر آلاف السنين لاستكشاف أعظم المواقع الأثرية التي شكّلت تاريخ
-          الإنسانية</p>
-        <a href="#sites" class="hero-cta" id="hero-cta" data-ar="استكشف المواقع  ↓" data-zh="探索遗址  ↓">استكشف المواقع
-          ↓</a>
-      </div>
-      <div class="hieroglyph-band"></div>
-    </section>
-
-    <section id="sites">
-      <div class="section-header fade-in">
-        <p class="section-label" data-ar="𓂀  المواقع الأثرية" data-zh="𓂀  考古遗址">𓂀 المواقع الأثرية</p>
-        <h2 class="section-title" data-ar="كنوز عبر الزمن" data-zh="跨越时间的宝藏">كنوز عبر الزمن</h2>
-        <div class="ornament">
-          <div class="orn-line r"></div><span class="orn-sym">◆</span>
-          <div class="orn-line l"></div>
-        </div>
-      </div>
-
-      <!-- REGIONS GRID (shown first) -->
-      <div class="regions-view fade-in" id="regionsView">
-        <div class="regions-grid" id="regionsGrid"></div>
-      </div>
-
-      <!-- REGION SITES (shown after clicking a region) -->
-      <div class="region-sites-view" id="regionSitesView" style="display:none;">
-        <div class="region-sites-header fade-in">
-          <button class="region-back-btn" id="regionBackBtn" onclick="showRegions()">
-            <span class="back-arrow">→</span>
-            <span data-ar="العودة للأماكن" data-zh="返回地区">العودة للأماكن</span>
-          </button>
-          <div class="region-sites-title-wrap">
-            <h3 class="region-sites-title" id="regionSitesTitle"></h3>
-            <p class="region-sites-count" id="regionSitesCount"></p>
-          </div>
-        </div>
-        <div class="sites-grid fade-in" id="sitesGrid"></div>
-      </div>
-    </section>
+  <nav>
+    <a class="nav-link active" onclick="showSection('home')" data-ar="المواقع الأثرية" data-zh="考古遗址">المواقع
+      الأثرية</a>
+    <a class="nav-link" onclick="showSection('civs')" data-ar="الحضارات" data-zh="文明">الحضارات</a>
+    <a class="nav-link" onclick="showSection('museums')" data-ar="المتاحف" data-zh="博物馆">المتاحف</a>
+    <a class="nav-link" onclick="showSection('about')" data-ar="عن الموقع" data-zh="关于我们">عن الموقع</a>
+    <a class="nav-link" onclick="showSection('team')" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</a>
+  </nav>
+  <div class="header-right">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn" onclick="setLang('zh')">中文</button>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="القائمة">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </div>
+</header>
 
-  <!-- ===== CIVILIZATIONS SECTION ===== -->
-  <div class="page-section" id="sec-civs">
-    <div style="height:80px"></div>
+<!-- ===== MOBILE SIDEBAR ===== -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="mobile-sidebar-header">
+    <div class="logo-text" id="mobile-logo-text">أثـر</div>
+    <button class="mobile-close-btn" onclick="toggleMobileMenu()" aria-label="إغلاق">✕</button>
+  </div>
+  <nav class="mobile-nav">
+    <a class="mobile-nav-link" onclick="showSection('home'); toggleMobileMenu();" data-ar="المواقع الأثرية" data-zh="考古遗址">المواقع الأثرية</a>
+    <a class="mobile-nav-link" onclick="showSection('civs'); toggleMobileMenu();" data-ar="الحضارات" data-zh="文明">الحضارات</a>
+    <a class="mobile-nav-link" onclick="showSection('museums'); toggleMobileMenu();" data-ar="المتاحف" data-zh="博物馆">المتاحف</a>
+    <a class="mobile-nav-link" onclick="showSection('about'); toggleMobileMenu();" data-ar="عن الموقع" data-zh="关于我们">عن الموقع</a>
+    <a class="mobile-nav-link" onclick="showSection('team'); toggleMobileMenu();" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</a>
+  </nav>
+  <div class="mobile-sidebar-footer">
+    <div class="lang-switch mobile-lang">
+      <button class="lang-btn" onclick="setLang('ar'); toggleMobileMenu();">عربي</button>
+      <button class="lang-btn" onclick="setLang('zh'); toggleMobileMenu();">中文</button>
+    </div>
+  </div>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<!-- ===== HOME SECTION ===== -->
+<div class="page-section active" id="sec-home">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-ring"></div>
+    <span class="corner-glyph tr">𓂀</span>
+    <span class="corner-glyph bl">𓅱</span>
+    <div class="hero-content">
+      <p class="hero-eyebrow" data-ar="𓂀  اكتشف إرث الحضارات  𓂀" data-zh="𓂀  探索文明的遗产  𓂀">𓂀 اكتشف إرث الحضارات 𓂀
+      </p>
+      <h1 class="hero-title">
+        <span id="hero-t1" data-ar="الحضارات الخالدة" data-zh="永恒的文明">الحضارات الخالدة</span>
+        <span id="hero-t2" style="font-size:0.65em;color:var(--gold-light)" data-ar="تحكي قصتها"
+              data-zh="讲述它们的故事">تحكي قصتها</span>
+      </h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc" data-ar="رحلة عبر آلاف السنين لاستكشاف أعظم المواقع الأثرية التي شكّلت تاريخ الإنسانية"
+         data-zh="穿越数千年的旅程，探索塑造人类历史的最伟大考古遗址">رحلة عبر آلاف السنين لاستكشاف أعظم المواقع الأثرية التي شكّلت تاريخ
+        الإنسانية</p>
+      <a href="#sites" class="hero-cta" id="hero-cta" data-ar="استكشف المواقع  ↓" data-zh="探索遗址  ↓">استكشف المواقع
+        ↓</a>
+    </div>
+    <div class="hieroglyph-band"></div>
+  </section>
+
+  <section id="sites">
     <div class="section-header fade-in">
-      <p class="section-label" data-ar="𓇯  عصور مصر عبر التاريخ" data-zh="𓇯  埃及历代时期">𓇯 عصور مصر عبر التاريخ</p>
-      <h2 class="section-title" data-ar="الحضارات والعصور المصرية" data-zh="埃及文明与时期">الحضارات والعصور المصرية</h2>
+      <p class="section-label" data-ar="𓂀  المواقع الأثرية" data-zh="𓂀  考古遗址">𓂀 المواقع الأثرية</p>
+      <h2 class="section-title" data-ar="كنوز عبر الزمن" data-zh="跨越时间的宝藏">كنوز عبر الزمن</h2>
       <div class="ornament">
         <div class="orn-line r"></div><span class="orn-sym">◆</span>
         <div class="orn-line l"></div>
       </div>
     </div>
-    <div class="civs-wrap">
-      <div class="civ-cards fade-in" id="civCards"></div>
-    </div>
-  </div>
 
-  <!-- ===== MUSEUMS SECTION ===== -->
-  <div class="page-section" id="sec-museums">
-    <div style="height:80px"></div>
-    <div class="section-header fade-in">
-      <p class="section-label" data-ar="𓏏  صون التراث المصري" data-zh="𓏏  埃及遗产保护">𓏏 صون التراث المصري</p>
-      <h2 class="section-title" data-ar="متاحف مصر الأثرية" data-zh="埃及考古博物馆">متاحف مصر الأثرية</h2>
-      <div class="ornament">
-        <div class="orn-line r"></div><span class="orn-sym">◆</span>
-        <div class="orn-line l"></div>
+    <!-- REGIONS GRID (shown first) -->
+    <div class="regions-view fade-in" id="regionsView">
+      <div class="regions-grid" id="regionsGrid"></div>
+    </div>
+
+    <!-- REGION SITES (shown after clicking a region) -->
+    <div class="region-sites-view" id="regionSitesView" style="display:none;">
+      <div class="region-sites-header fade-in">
+        <button class="region-back-btn" id="regionBackBtn" onclick="showRegions()">
+          <span class="back-arrow">→</span>
+          <span data-ar="العودة للأماكن" data-zh="返回地区">العودة للأماكن</span>
+        </button>
+        <div class="region-sites-title-wrap">
+          <h3 class="region-sites-title" id="regionSitesTitle"></h3>
+          <p class="region-sites-count" id="regionSitesCount"></p>
+        </div>
       </div>
+      <div class="sites-grid fade-in" id="sitesGrid"></div>
     </div>
-    <div class="museums-wrap">
-      <div class="museum-list fade-in" id="museumList"></div>
+  </section>
+</div>
+
+<!-- ===== CIVILIZATIONS SECTION ===== -->
+<div class="page-section" id="sec-civs">
+  <div style="height:80px"></div>
+  <div class="section-header fade-in">
+    <p class="section-label" data-ar="𓇯  عصور مصر عبر التاريخ" data-zh="𓇯  埃及历代时期">𓇯 عصور مصر عبر التاريخ</p>
+    <h2 class="section-title" data-ar="الحضارات والعصور المصرية" data-zh="埃及文明与时期">الحضارات والعصور المصرية</h2>
+    <div class="ornament">
+      <div class="orn-line r"></div><span class="orn-sym">◆</span>
+      <div class="orn-line l"></div>
     </div>
   </div>
+  <div class="civs-wrap">
+    <div class="civ-cards fade-in" id="civCards"></div>
+  </div>
+</div>
 
-  <!-- ===== ABOUT SECTION ===== -->
-  <div class="page-section" id="sec-about">
-    <div style="height:80px"></div>
-    <div class="about-wrap">
-      <div class="about-hero-text fade-in">
-        <h2 class="about-big" data-ar="نحن نؤمن أن التاريخ ليس ماضياً — بل هو حوار حيّ مع الحاضر"
+<!-- ===== MUSEUMS SECTION ===== -->
+<div class="page-section" id="sec-museums">
+  <div style="height:80px"></div>
+  <div class="section-header fade-in">
+    <p class="section-label" data-ar="𓏏  صون التراث المصري" data-zh="𓏏  埃及遗产保护">𓏏 صون التراث المصري</p>
+    <h2 class="section-title" data-ar="متاحف مصر الأثرية" data-zh="埃及考古博物馆">متاحف مصر الأثرية</h2>
+    <div class="ornament">
+      <div class="orn-line r"></div><span class="orn-sym">◆</span>
+      <div class="orn-line l"></div>
+    </div>
+  </div>
+  <div class="museums-wrap">
+    <div class="museum-list fade-in" id="museumList"></div>
+  </div>
+</div>
+
+<!-- ===== ABOUT SECTION ===== -->
+<div class="page-section" id="sec-about">
+  <div style="height:80px"></div>
+  <div class="about-wrap">
+    <div class="about-hero-text fade-in">
+      <h2 class="about-big" data-ar="نحن نؤمن أن التاريخ ليس ماضياً — بل هو حوار حيّ مع الحاضر"
           data-zh="我们相信历史不是过去——而是与现在的鲜活对话">نحن نؤمن أن التاريخ ليس ماضياً — بل هو حوار حيّ مع الحاضر</h2>
-        <p class="about-sub"
-          data-ar="منصة أثر هي بوابتك الرقمية لاستكشاف إرث مصر الحضاري العريق — من عصر الفراعنة والحضارة الإسلامية إلى التراث القبطي والعصر الحديث"
-          data-zh="Athar平台是您探索埃及悠久文明遗产的数字门户——从法老时代、伊斯兰文明到科普特遗产和现代时期">منصة أثر هي بوابتك الرقمية لاستكشاف إرث مصر الحضاري العريق — من عصر الفراعنة والحضارة الإسلامية إلى التراث القبطي والعصر الحديث</p>
+      <p class="about-sub"
+         data-ar="منصة أثر هي بوابتك الرقمية لاستكشاف إرث مصر الحضاري العريق — من عصر الفراعنة والحضارة الإسلامية إلى التراث القبطي والعصر الحديث"
+         data-zh="Athar平台是您探索埃及悠久文明遗产的数字门户——从法老时代、伊斯兰文明到科普特遗产和现代时期">منصة أثر هي بوابتك الرقمية لاستكشاف إرث مصر الحضاري العريق — من عصر الفراعنة والحضارة الإسلامية إلى التراث القبطي والعصر الحديث</p>
+    </div>
+    <div class="about-grid fade-in">
+      <div class="about-box">
+        <span class="about-box-icon">🏛</span>
+        <div class="about-box-title" data-ar="توثيق دقيق" data-zh="精确记录">توثيق دقيق</div>
+        <p class="about-box-text" data-ar="نوثّق كل موقع بمعلومات تاريخية دقيقة مراجعة من متخصصين في الآثار والتاريخ"
+           data-zh="我们用经考古和历史专家审核的准确历史信息记录每个遗址">نوثّق كل موقع بمعلومات تاريخية دقيقة مراجعة من متخصصين في الآثار
+          والتاريخ</p>
       </div>
-      <div class="about-grid fade-in">
-        <div class="about-box">
-          <span class="about-box-icon">🏛</span>
-          <div class="about-box-title" data-ar="توثيق دقيق" data-zh="精确记录">توثيق دقيق</div>
-          <p class="about-box-text" data-ar="نوثّق كل موقع بمعلومات تاريخية دقيقة مراجعة من متخصصين في الآثار والتاريخ"
-            data-zh="我们用经考古和历史专家审核的准确历史信息记录每个遗址">نوثّق كل موقع بمعلومات تاريخية دقيقة مراجعة من متخصصين في الآثار
-            والتاريخ</p>
-        </div>
-        <div class="about-box">
-          <span class="about-box-icon">🇪🇬</span>
-          <div class="about-box-title" data-ar="التغطية الجغرافية" data-zh="地理覆盖">التغطية الجغرافية</div>
-          <p class="about-box-text"
-            data-ar="نغطي المواقع الأثرية في أقاليم مصر الرئيسية: القاهرة والجيزة، الأقصر، أسوان، والإسكندرية"
-            data-zh="我们覆盖埃及主要地区的考古遗址：开罗和吉萨、卢克索、阿斯旺和亚历山大">نغطي المواقع الأثرية في أقاليم مصر الرئيسية: القاهرة والجيزة، الأقصر، أسوان، والإسكندرية</p>
-        </div>
-        <div class="about-box">
-          <span class="about-box-icon">🌐</span>
-          <div class="about-box-title" data-ar="متعدد اللغات" data-zh="多语言">متعدد اللغات</div>
-          <p class="about-box-text"
-            data-ar="نقدم محتوانا باللغتين العربية والصينية لخدمة أوسع شريحة من المهتمين بالتراث"
-            data-zh="我们以阿拉伯语和中文提供内容，服务更广泛的遗产爱好者">نقدم محتوانا باللغتين العربية والصينية لخدمة أوسع شريحة من المهتمين
-            بالتراث</p>
-        </div>
+      <div class="about-box">
+        <span class="about-box-icon">🇪🇬</span>
+        <div class="about-box-title" data-ar="التغطية الجغرافية" data-zh="地理覆盖">التغطية الجغرافية</div>
+        <p class="about-box-text"
+           data-ar="نغطي المواقع الأثرية في أقاليم مصر الرئيسية: القاهرة والجيزة، الأقصر، أسوان، والإسكندرية"
+           data-zh="我们覆盖埃及主要地区的考古遗址：开罗和吉萨、卢克索、阿斯旺和亚历山大">نغطي المواقع الأثرية في أقاليم مصر الرئيسية: القاهرة والجيزة، الأقصر، أسوان، والإسكندرية</p>
       </div>
-      <div class="about-mission fade-in">
-        <h3 data-ar="رسالتنا" data-zh="我们的使命">رسالتنا</h3>
-        <p data-ar="تأسست منصة أثر بهدف جعل التراث الإنساني في متناول الجميع. نؤمن أن فهم الحضارات السابقة يُغني حياتنا الحاضرة ويُرشد مستقبلنا. لذا نسعى إلى تقديم محتوى أثري رصين، موثوق، وجذاب بصرياً، يُلهم الأجيال القادمة على التواصل مع جذورهم الإنسانية المشتركة."
-          data-zh="Athar平台的成立旨在让人类遗产触手可及。我们相信理解过去的文明能丰富我们的现在，引领我们的未来。因此，我们致力于提供严谨、可靠、视觉上引人入胜的考古内容，激励后代与共同的人类根源相连。">تأسست
-          منصة أثر بهدف جعل التراث الإنساني في متناول الجميع. نؤمن أن فهم الحضارات السابقة يُغني حياتنا الحاضرة ويُرشد
-          مستقبلنا. لذا نسعى إلى تقديم محتوى أثري رصين، موثوق، وجذاب بصرياً، يُلهم الأجيال القادمة على التواصل مع جذورهم
-          الإنسانية المشتركة.</p>
-      </div>
-      <div class="about-stats fade-in">
-        <div class="about-stat"><span class="about-stat-v">32+</span><span class="about-stat-l" data-ar="موقع أثري"
-            data-zh="考古遗址">موقع أثري</span></div>
-        <div class="about-stat"><span class="about-stat-v">5</span><span class="about-stat-l" data-ar="عصور تاريخية"
-            data-zh="历史时期">عصور تاريخية</span></div>
-        <div class="about-stat"><span class="about-stat-v">2</span><span class="about-stat-l" data-ar="لغات مدعومة"
-            data-zh="支持语言">لغات مدعومة</span></div>
-        <div class="about-stat"><span class="about-stat-v">∞</span><span class="about-stat-l" data-ar="سنوات من التاريخ"
-            data-zh="历史年份">سنوات من التاريخ</span></div>
+      <div class="about-box">
+        <span class="about-box-icon">🌐</span>
+        <div class="about-box-title" data-ar="متعدد اللغات" data-zh="多语言">متعدد اللغات</div>
+        <p class="about-box-text"
+           data-ar="نقدم محتوانا باللغتين العربية والصينية لخدمة أوسع شريحة من المهتمين بالتراث"
+           data-zh="我们以阿拉伯语和中文提供内容，服务更广泛的遗产爱好者">نقدم محتوانا باللغتين العربية والصينية لخدمة أوسع شريحة من المهتمين
+          بالتراث</p>
       </div>
     </div>
-  </div>
-
-  <!-- ===== TEAM SECTION ===== -->
-  <div class="page-section" id="sec-team">
-    <div style="height:80px"></div>
-    <div class="section-header fade-in">
-      <p class="section-label" data-ar="👥  الفريق" data-zh="👥  团队">👥 الفريق</p>
-      <h2 class="section-title" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</h2>
-      <div class="ornament">
-        <div class="orn-line r"></div><span class="orn-sym">◆</span>
-        <div class="orn-line l"></div>
-      </div>
+    <div class="about-mission fade-in">
+      <h3 data-ar="رسالتنا" data-zh="我们的使命">رسالتنا</h3>
+      <p data-ar="تأسست منصة أثر بهدف جعل التراث الإنساني في متناول الجميع. نؤمن أن فهم الحضارات السابقة يُغني حياتنا الحاضرة ويُرشد مستقبلنا. لذا نسعى إلى تقديم محتوى أثري رصين، موثوق، وجذاب بصرياً، يُلهم الأجيال القادمة على التواصل مع جذورهم الإنسانية المشتركة."
+         data-zh="Athar平台的成立旨在让人类遗产触手可及。我们相信理解过去的文明能丰富我们的现在，引领我们的未来。因此，我们致力于提供严谨、可靠、视觉上引人入胜的考古内容，激励后代与共同的人类根源相连。">تأسست
+        منصة أثر بهدف جعل التراث الإنساني في متناول الجميع. نؤمن أن فهم الحضارات السابقة يُغني حياتنا الحاضرة ويُرشد
+        مستقبلنا. لذا نسعى إلى تقديم محتوى أثري رصين، موثوق، وجذاب بصرياً، يُلهم الأجيال القادمة على التواصل مع جذورهم
+        الإنسانية المشتركة.</p>
     </div>
-    <div class="team-wrap">
-      <p class="team-intro fade-in" data-ar="الطلاب القائمون على هذا المشروع" data-zh="参与此项目的学生">الطلاب القائمون على هذا المشروع</p>
-      <div class="team-grid fade-in" id="teamGrid"></div>
+    <div class="about-stats fade-in">
+      <div class="about-stat"><span class="about-stat-v">32+</span><span class="about-stat-l" data-ar="موقع أثري"
+                                                                         data-zh="考古遗址">موقع أثري</span></div>
+      <div class="about-stat"><span class="about-stat-v">5</span><span class="about-stat-l" data-ar="عصور تاريخية"
+                                                                       data-zh="历史时期">عصور تاريخية</span></div>
+      <div class="about-stat"><span class="about-stat-v">2</span><span class="about-stat-l" data-ar="لغات مدعومة"
+                                                                       data-zh="支持语言">لغات مدعومة</span></div>
+      <div class="about-stat"><span class="about-stat-v">∞</span><span class="about-stat-l" data-ar="سنوات من التاريخ"
+                                                                       data-zh="历史年份">سنوات من التاريخ</span></div>
     </div>
   </div>
+</div>
 
-  <footer>
-    <div class="footer-copy" id="footer-left">© 2024 أثر — جميع الحقوق محفوظة</div>
-    <div class="footer-glyph">𓂀 𓃀 𓅱 𓆣 𓇯</div>
-    <div class="footer-copy" id="footer-right" data-ar="صُنع بشغف للحضارة" data-zh="为文明而生">صُنع بشغف للحضارة</div>
-  </footer>
-
-  <!-- DETAIL OVERLAY -->
-  <div class="detail-overlay" id="detailOverlay">
-    <button class="detail-close" onclick="closeDetail()">✕</button>
-    <div id="detailContent"></div>
+<!-- ===== TEAM SECTION ===== -->
+<div class="page-section" id="sec-team">
+  <div style="height:80px"></div>
+  <div class="section-header fade-in">
+    <p class="section-label" data-ar="👥  الفريق" data-zh="👥  团队">👥 الفريق</p>
+    <h2 class="section-title" data-ar="فريق العمل" data-zh="团队成员">فريق العمل</h2>
+    <div class="ornament">
+      <div class="orn-line r"></div><span class="orn-sym">◆</span>
+      <div class="orn-line l"></div>
+    </div>
   </div>
-
-  <!-- LIGHTBOX OVERLAY -->
-  <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
-    <button class="lightbox-nav lightbox-next" id="lightboxNext" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
-    <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
-    <img class="lightbox-img" id="lightboxImg" src="" alt="Full Screen Image" onclick="event.stopPropagation()">
+  <div class="team-wrap">
+    <p class="team-intro fade-in" data-ar="الطلاب القائمون على هذا المشروع" data-zh="参与此项目的学生">الطلاب القائمون على هذا المشروع</p>
+    <div class="team-grid fade-in" id="teamGrid"></div>
   </div>
+</div>
 
-  <!-- ===== EXTERNAL SCRIPTS ===== -->
-  <script src="js/data.js"></script>
-  <script src="js/app.js"></script>
+<footer>
+  <div class="footer-copy" id="footer-left">© 2024 أثر — جميع الحقوق محفوظة</div>
+  <div class="footer-glyph">𓂀 𓃀 𓅱 𓆣 𓇯</div>
+  <div class="footer-copy" id="footer-right" data-ar="صُنع بشغف للحضارة" data-zh="为文明而生">صُنع بشغف للحضارة</div>
+</footer>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detailOverlay">
+  <button class="detail-close" onclick="closeDetail()">✕</button>
+  <div id="detailContent"></div>
+</div>
+
+<!-- LIGHTBOX OVERLAY -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
+  <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="Full Screen Image" onclick="event.stopPropagation()">
+</div>
+
+<!-- ===== EXTERNAL SCRIPTS ===== -->
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
 </body>
 
 </html>
