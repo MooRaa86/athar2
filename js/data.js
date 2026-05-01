@@ -382,6 +382,7 @@ const sites = [
       ]
     },
     gallery: [
+      'images/oksorP1.jpeg','images/oksorP2.jpeg','images/oksorP3.jpeg','images/oksorP4.jpeg','images/oksorP5.jpeg',
       'images/oksor1.jpg', 'images/oksor2.jpg', 'images/oksor3.jpg',
       'images/oksor4.jpg', 'images/oksor5.jpg', 'images/oksor6.jpg',
       'images/oksor7.jpg', 'images/oksor8.jpg'
@@ -722,6 +723,8 @@ const sites = [
       ]
     },
     gallery: [
+      'images/HaboP1.jpeg','images/HaboP2.jpeg','images/HaboP3.jpeg',
+      'images/HaboP4.jpeg','images/HaboP5.jpeg','images/HaboP6.jpeg', 'images/HaboP7.jpeg',
       'images/habo1.jpg', 'images/habo2.jpg', 'images/habo3.jpg',
       'images/habo4.jpg', 'images/habo5.jpg', 'images/habo6.jpg',
       'images/habo7.jpg'
@@ -1078,7 +1081,7 @@ const sites = [
       ]
     },
     gallery: [
-      'images/mamnoon1.jpg'
+      'images/mamnoon1.jpg','images/mamnonP1.jpeg','images/mamnonP2.jpeg'
     ]
   },
   {
@@ -2901,7 +2904,10 @@ const sites = [
         { icon: '⛪', title: '诞生室与基督教改造', text: '诞生室是庆祝荷鲁斯诞生的建筑。神庙的部分区域被改建为教堂，古老的浮雕上刻有十字架，反映了埃及从多神教向基督教的转变。' }
       ]
     },
-    gallery: ['images/ma3bad-feyala1.jpg', 'images/ma3bad-feyala2.jpg', 'images/ma3bad-feyala3.jpg', 'images/ma3bad-feyala4.jpg', 'images/ma3bad-feyala5.jpg']
+    gallery: ['images/fiealaP1.jpeg','images/fiealaP2.jpeg','images/fiealaP3.jpeg','images/fiealaP4.jpeg','images/fiealaP5.jpeg','images/fiealaP6.jpeg',
+        'images/fiealaP7.jpeg','images/fiealaP8.jpeg','images/fiealaP9.jpeg',
+        'images/ma3bad-feyala1.jpg', 'images/ma3bad-feyala2.jpg', 'images/ma3bad-feyala3.jpg', 'images/ma3bad-feyala4.jpg', 'images/ma3bad-feyala5.jpg'
+    ]
   },
   {
     id: 'edfu', cat: 'egypt', region: 'aswan', wide: true,
