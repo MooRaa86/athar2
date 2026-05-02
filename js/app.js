@@ -511,10 +511,11 @@ function openInnerPlace(siteId, placeIdx) {
     document.body.appendChild(panel);
   }
 
+  const imagesArray = JSON.stringify(place.images || []);
   panel.innerHTML = `
         <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
         <div class="ipp-hero" style="${(place.images && place.images.length > 0) ? '' : 'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px;'}">
-          ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}">` : ''}
+          ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox('${place.images[0]}', ${imagesArray}, 0)" style="cursor: zoom-in;">` : ''}
           <div class="ipp-hero-overlay"></div>
           <div class="ipp-hero-content">
             <span class="ipp-hero-icon" style="${(place.images && place.images.length > 0) ? '' : 'font-size: 64px; display: block; margin-bottom: 15px;'}">${place.icon}</span>
@@ -527,7 +528,7 @@ function openInnerPlace(siteId, placeIdx) {
           ${(place.images || []).length > 0 ? `
             <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
             <div class="ipp-gallery">
-              ${place.images.map(img => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}">`).join('')}
+              ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox('${img}', ${imagesArray}, ${idx})" style="cursor: zoom-in;">`).join('')}
             </div>
           ` : ''}
           ${place.mapUrl ? `
