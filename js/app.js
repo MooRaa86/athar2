@@ -212,7 +212,7 @@ function openDetail(id, skipHash = false) {
         </div>
         <div class="detail-sidebar">
           <h3>${t.siteInfo}</h3>
-          <table class="info-table">${info.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>
+          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}</td><td class="info-value">${v}</td></tr>`).join('')}</table>
           <div class="timeline-section">
             <h3 style="margin-top:2rem">${t.timeline}</h3>
             ${tl2.map(item => `
@@ -387,7 +387,7 @@ function openDetail(id, skipHash = false) {
 
       <!-- GALLERY -->
       <div class="detail-section-hd"><span class="detail-section-glyph">𓃀</span><h3>${t.gallery}</h3></div>
-      <div class="detail-gallery">${s.gallery.map(img => `<img class="gallery-img" src="${img}" loading="lazy">`).join('')}</div>
+      <div class="detail-gallery">${s.gallery.map(img => `<img class="gallery-img" src="${img}" loading="lazy" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">`).join('')}</div>
 
     </div>
   `;
@@ -455,13 +455,13 @@ function openDetail(id, skipHash = false) {
       .place-card-body .detail-place-text { flex:1; }
       .place-card-cta { display:inline-block; margin-top:0.8rem; font-size:0.75rem; color:var(--gold); letter-spacing:0.1em; transition:color 0.3s; }
       .detail-place-card.clickable:hover .place-card-cta { color:var(--gold-light); }
-      /* ===== INNER PLACE DETAIL PANEL ===== */
+      /* ===== INNER PLACE PANEL ===== */
       .inner-place-panel { position:fixed; inset:0; background:var(--obsidian); z-index:700; overflow-y:auto; opacity:0; pointer-events:none; transition:opacity 0.4s; }
       .inner-place-panel.active { opacity:1; pointer-events:all; }
       .ipp-close { position:fixed; top:1.2rem; left:1.5rem; z-index:800; width:44px; height:44px; border:1px solid rgba(201,168,76,0.5); background:rgba(13,10,5,0.85); color:var(--gold-light); font-size:1.2rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s; }
       .ipp-close:hover { background:var(--gold); color:var(--obsidian); }
       .ipp-hero { position:relative; height:50vh; min-height:300px; overflow:hidden; }
-      .ipp-hero-img { width:100%; height:100%; object-fit:cover; filter:sepia(15%) brightness(0.75); }
+      .ipp-hero-img { width:100%; height:100%; object-fit:cover; filter:sepia(15%) brightness(0.75); cursor:zoom-in; }
       .ipp-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(13,10,5,0.3),rgba(13,10,5,0.15) 40%,rgba(13,10,5,0.88) 80%,var(--obsidian)); }
       .ipp-hero-content { position:absolute; bottom:2rem; right:3rem; left:3rem; }
       .ipp-hero-icon { font-size:2.5rem; display:block; margin-bottom:0.6rem; }
@@ -469,7 +469,7 @@ function openDetail(id, skipHash = false) {
       .ipp-body { max-width:1000px; margin:0 auto; padding:2.5rem; }
       .ipp-desc { font-size:1rem; color:var(--sand-dark); line-height:2.1; margin-bottom:2.5rem; padding:1.5rem 2rem; background:var(--stone); border:1px solid rgba(201,168,76,0.12); border-right:3px solid var(--gold-dark); }
       .ipp-gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.8rem; margin-bottom:2.5rem; }
-      .ipp-gallery-img { width:100%; aspect-ratio:4/3; object-fit:cover; filter:sepia(15%) brightness(0.85); transition:filter 0.4s, transform 0.3s; border:1px solid rgba(201,168,76,0.1); }
+      .ipp-gallery-img { width:100%; aspect-ratio:4/3; object-fit:cover; filter:sepia(15%) brightness(0.85); transition:filter 0.4s, transform 0.3s; border:1px solid rgba(201,168,76,0.1); cursor:zoom-in; }
       .ipp-gallery-img:hover { filter:sepia(0%) brightness(1); transform:scale(0.98); }
       .ipp-map-btn { display:inline-flex; align-items:center; gap:0.7rem; padding:0.85rem 2rem; border:1px solid var(--gold); color:var(--gold-light); text-decoration:none; font-size:0.9rem; letter-spacing:0.12em; transition:all 0.4s; font-family:inherit; background:transparent; cursor:pointer; }
       .ipp-map-btn:hover { background:var(--gold); color:var(--obsidian); box-shadow:0 0 30px rgba(201,168,76,0.2); }
@@ -511,34 +511,33 @@ function openInnerPlace(siteId, placeIdx) {
     document.body.appendChild(panel);
   }
 
-  const imagesArray = JSON.stringify(place.images || []);
   panel.innerHTML = `
-        <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
-        <div class="ipp-hero" style="${(place.images && place.images.length > 0) ? '' : 'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px;'}">
-          ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox('${place.images[0]}', ${imagesArray}, 0)" style="cursor: zoom-in;">` : ''}
-          <div class="ipp-hero-overlay"></div>
-          <div class="ipp-hero-content">
-            <span class="ipp-hero-icon" style="${(place.images && place.images.length > 0) ? '' : 'font-size: 64px; display: block; margin-bottom: 15px;'}">${place.icon}</span>
-            <h1 class="ipp-hero-title">${place.title}</h1>
-          </div>
+    <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
+    <div class="ipp-hero" style="${(place.images && place.images.length > 0) ? '' : 'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px;'}">
+      ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">` : ''}
+      <div class="ipp-hero-overlay"></div>
+      <div class="ipp-hero-content">
+        <span class="ipp-hero-icon" style="${(place.images && place.images.length > 0) ? '' : 'font-size: 64px; display: block; margin-bottom: 15px;'}">${place.icon}</span>
+        <h1 class="ipp-hero-title">${place.title}</h1>
+      </div>
+    </div>
+    <div class="ipp-body">
+      <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
+      <div class="ipp-desc">${place.text}</div>
+      ${(place.images || []).length > 0 ? `
+        <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
+        <div class="ipp-gallery">
+          ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">`).join('')}
         </div>
-        <div class="ipp-body">
-          <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
-          <div class="ipp-desc">${place.text}</div>
-          ${(place.images || []).length > 0 ? `
-            <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
-            <div class="ipp-gallery">
-              ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox('${img}', ${imagesArray}, ${idx})" style="cursor: zoom-in;">`).join('')}
-            </div>
-          ` : ''}
-          ${place.mapUrl ? `
-            <div class="detail-section-hd"><span class="detail-section-glyph">🗺</span><h3>${locLbl}</h3></div>
-            <div class="ipp-map-section">
-              <a href="${place.mapUrl}" target="_blank" rel="noopener" class="ipp-map-btn">${mapLbl}</a>
-            </div>
-          ` : ''}
+      ` : ''}
+      ${place.mapUrl ? `
+        <div class="detail-section-hd"><span class="detail-section-glyph">🗺</span><h3>${locLbl}</h3></div>
+        <div class="ipp-map-section">
+          <a href="${place.mapUrl}" target="_blank" rel="noopener" class="ipp-map-btn">${mapLbl}</a>
         </div>
-      `;
+      ` : ''}
+    </div>
+  `;
 
   panel.classList.add('active');
   panel.scrollTop = 0;
@@ -656,8 +655,181 @@ function toggleMobileMenu() {
   }
 }
 
-// ===== INIT =====
-renderRegions();
+// ===== LIGHTBOX SYSTEM - WORKING VERSION WITH SWIPE =====
+let lbGallery = [];
+let lbIndex = 0;
+let lbTouchStart = 0;
+let lbTouchEnd = 0;
+
+function openLightbox(clickedImgElement, customGallery = null, customIndex = 0) {
+  const overlay = document.getElementById('lightboxOverlay');
+  const imgEl = document.getElementById('lightboxImg');
+
+  if (!overlay || !imgEl) return;
+
+  // Try to find all images in the same gallery container
+  let galleryImages = [];
+
+  if (customGallery && customGallery.length > 0) {
+    // Case 1: We received a custom gallery array
+    galleryImages = customGallery;
+    lbIndex = customIndex;
+  } else {
+    // Case 2: Find the parent gallery container from the clicked image
+    let galleryContainer = null;
+    let clickedElement = clickedImgElement;
+
+    // Check if clicked image is inside .ipp-gallery (inner places)
+    if (clickedElement.closest && clickedElement.closest('.ipp-gallery')) {
+      galleryContainer = clickedElement.closest('.ipp-gallery');
+    }
+    // Check if inside .detail-gallery (main site gallery)
+    else if (clickedElement.closest && clickedElement.closest('.detail-gallery')) {
+      galleryContainer = clickedElement.closest('.detail-gallery');
+    }
+    // Check if inside .ipp-body (inner place hero or single image)
+    else if (clickedElement.closest && clickedElement.closest('.ipp-body')) {
+      // Try to get all gallery images from the ipp-gallery inside same panel
+      const ippGallery = clickedElement.closest('.ipp-body')?.querySelector('.ipp-gallery');
+      if (ippGallery) {
+        galleryContainer = ippGallery;
+      } else {
+        // Just this single image + hero image
+        const heroImg = clickedElement.closest('.ipp-body')?.querySelector('.ipp-hero-img');
+        if (heroImg && heroImg.src !== clickedElement.src) {
+          galleryImages = [heroImg.src, clickedElement.src];
+        } else {
+          galleryImages = [clickedElement.src];
+        }
+        lbIndex = 0;
+      }
+    }
+
+    // If we found a container, collect all images from it
+    if (galleryContainer && !galleryImages.length) {
+      const allImgs = galleryContainer.querySelectorAll('img');
+      galleryImages = Array.from(allImgs).map(img => img.src);
+
+      // Find the index of clicked image
+      lbIndex = galleryImages.findIndex(src => src === clickedElement.src);
+      if (lbIndex === -1) lbIndex = 0;
+    }
+    // No container found, just this image
+    else if (!galleryImages.length) {
+      galleryImages = [clickedElement.src];
+      lbIndex = 0;
+    }
+  }
+
+  // Store gallery globally
+  lbGallery = [...galleryImages];
+
+  // Show first image
+  imgEl.src = lbGallery[lbIndex];
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  updateLightboxButtons();
+}
+
+function navigateLightbox(direction) {
+  if (lbGallery.length <= 1) return;
+
+  let newIndex = lbIndex + direction;
+  if (newIndex < 0) newIndex = lbGallery.length - 1;
+  if (newIndex >= lbGallery.length) newIndex = 0;
+
+  lbIndex = newIndex;
+
+  const imgEl = document.getElementById('lightboxImg');
+  if (imgEl) {
+    imgEl.style.opacity = '0.3';
+    setTimeout(() => {
+      imgEl.src = lbGallery[lbIndex];
+      imgEl.style.opacity = '1';
+    }, 150);
+  }
+
+  updateLightboxButtons();
+}
+
+function updateLightboxButtons() {
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+  const counter = document.getElementById('lightboxCounter');
+
+  if (prevBtn) {
+    if (lbGallery.length <= 1) {
+      prevBtn.style.opacity = '0.3';
+      nextBtn.style.opacity = '0.3';
+      prevBtn.style.pointerEvents = 'none';
+      nextBtn.style.pointerEvents = 'none';
+    } else {
+      prevBtn.style.opacity = '1';
+      nextBtn.style.opacity = '1';
+      prevBtn.style.pointerEvents = 'auto';
+      nextBtn.style.pointerEvents = 'auto';
+    }
+  }
+
+  if (counter && lbGallery.length > 0) {
+    counter.textContent = `${lbIndex + 1} / ${lbGallery.length}`;
+  }
+}
+
+function closeLightbox() {
+  const overlay = document.getElementById('lightboxOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      lbGallery = [];
+      lbIndex = 0;
+    }, 200);
+  }
+}
+
+// ===== SWIPE HANDLERS FOR LIGHTBOX =====
+function handleLightboxTouchStart(e) {
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    lbTouchStart = e.changedTouches[0].screenX;
+  }
+}
+
+function handleLightboxTouchEnd(e) {
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    lbTouchEnd = e.changedTouches[0].screenX;
+    const diff = lbTouchStart - lbTouchEnd;
+    const threshold = 50;
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        navigateLightbox(1);  // Swipe left -> next
+      } else {
+        navigateLightbox(-1); // Swipe right -> previous
+      }
+    }
+  }
+}
+
+// ===== GLOBAL IMAGE CLICK HANDLER =====
+function setupGlobalImageClickHandler() {
+  document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'IMG' &&
+        e.target.src &&
+        e.target.src.includes('images/') &&
+        !e.target.closest('.lightbox-overlay')) {
+
+      // Don't open lightbox if clicking on map images or tiny icons
+      if (e.target.closest('.ipp-map-section')) return;
+      if (e.target.classList && e.target.classList.contains('team-img')) return;
+
+      openLightbox(e.target, null, 0);
+    }
+  });
+}
 
 // ===== ROUTER =====
 let currentRoute = "";
@@ -694,29 +866,55 @@ function handleRoute() {
   }
 }
 
-window.addEventListener('hashchange', handleRoute);
-// Trigger on initial load
+// ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Setup touch handlers for lightbox
+  document.addEventListener('touchstart', handleLightboxTouchStart);
+  document.addEventListener('touchend', handleLightboxTouchEnd);
+
+  // Setup global image click handler
+  setupGlobalImageClickHandler();
+
+  // Handle hash routing
   if (window.location.hash) {
     handleRoute();
   }
+
+  // Initial render
+  renderRegions();
+
+  // Scroll effects
+  const header = document.getElementById('mainHeader');
+  window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 60));
+
+  // Scroll animations
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // Hero CTA
+  document.querySelector('.hero-cta')?.addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('sites').scrollIntoView({ behavior: 'smooth' });
+  });
 });
 
-// Scroll effects
-const header = document.getElementById('mainHeader');
-window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 60));
+// ===== GLOBAL KEYBOARD HANDLER =====
+document.addEventListener('keydown', (e) => {
+  // Handle lightbox navigation with arrows
+  const lb = document.getElementById('lightboxOverlay');
+  if (lb && lb.classList.contains('active')) {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      navigateLightbox(-1);
+      return;
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      navigateLightbox(1);
+      return;
+    }
+  }
 
-// Scroll animations
-const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
-
-// Hero CTA
-document.querySelector('.hero-cta')?.addEventListener('click', e => {
-  e.preventDefault();
-  document.getElementById('sites').scrollIntoView({ behavior: 'smooth' });
-});
-
-document.addEventListener('keydown', e => {
+  // Handle Escape key
   if (e.key === 'Escape') {
     const lb = document.getElementById('lightboxOverlay');
     if (lb && lb.classList.contains('active')) {
@@ -724,130 +922,12 @@ document.addEventListener('keydown', e => {
       return;
     }
     const ipp = document.getElementById('innerPlacePanel');
-    if (ipp && ipp.classList.contains('active')) { closeInnerPlace(); }
-    else { closeDetail(); }
-  }
-});
-
-// ===== GLOBAL LIGHTBOX FOR IMAGES =====
-let currentLightboxGallery = [];
-let currentLightboxIndex = 0;
-let touchStartX = 0;
-let touchEndX = 0;
-
-function openLightbox(src, gallery = null, index = 0) {
-  const lb = document.getElementById('lightboxOverlay');
-  const img = document.getElementById('lightboxImg');
-  if (lb && img) {
-    if (gallery && gallery.length > 0) {
-      currentLightboxGallery = gallery;
-      currentLightboxIndex = index;
+    if (ipp && ipp.classList.contains('active')) {
+      closeInnerPlace();
     } else {
-      const clickedImg = Array.from(document.querySelectorAll('img[src*="images/"]')).find(img => img.src === src);
-      if (clickedImg) {
-        const parent = clickedImg.closest('.detail-gallery, .ipp-gallery, .inner-place-panel, .gallery-grid');
-        if (parent) {
-          const siblings = Array.from(parent.querySelectorAll('img[src*="images/"]'));
-          currentLightboxGallery = siblings.map(img => img.src);
-          currentLightboxIndex = currentLightboxGallery.indexOf(src);
-        } else {
-          currentLightboxGallery = [src];
-          currentLightboxIndex = 0;
-        }
-      } else {
-        currentLightboxGallery = [src];
-        currentLightboxIndex = 0;
-      }
-    }
-
-    img.src = src;
-    lb.classList.add('active');
-    updateLightboxUI();
-  }
-}
-
-function navigateLightbox(direction) {
-  if (currentLightboxGallery.length <= 1) return;
-  const newIndex = currentLightboxIndex + direction;
-  if (newIndex >= 0 && newIndex < currentLightboxGallery.length) {
-    currentLightboxIndex = newIndex;
-    const img = document.getElementById('lightboxImg');
-    if (img) {
-      img.style.opacity = '0.5';
-      setTimeout(() => {
-        img.src = currentLightboxGallery[currentLightboxIndex];
-        img.style.opacity = '1';
-      }, 150);
-    }
-    updateLightboxUI();
-  }
-}
-
-function updateLightboxUI() {
-  const prevBtn = document.getElementById('lightboxPrev');
-  const nextBtn = document.getElementById('lightboxNext');
-  const counter = document.getElementById('lightboxCounter');
-  if (prevBtn) prevBtn.disabled = currentLightboxIndex <= 0;
-  if (nextBtn) nextBtn.disabled = currentLightboxIndex >= currentLightboxGallery.length - 1;
-  if (counter) counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxGallery.length}`;
-}
-
-function closeLightbox() {
-  const lb = document.getElementById('lightboxOverlay');
-  if (lb) {
-    lb.classList.remove('active');
-    setTimeout(() => {
-      document.getElementById('lightboxImg').src = '';
-      currentLightboxGallery = [];
-      currentLightboxIndex = 0;
-    }, 300);
-  }
-}
-
-document.addEventListener('click', e => {
-  if (e.target.tagName === 'IMG' && e.target.src && e.target.src.includes('images/')) {
-    if (!e.target.closest('.lightbox-overlay')) {
-      openLightbox(e.target.src);
+      closeDetail();
     }
   }
 });
 
-document.addEventListener('keydown', e => {
-  const lb = document.getElementById('lightboxOverlay');
-  if (lb && lb.classList.contains('active')) {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      navigateLightbox(-1);
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      navigateLightbox(1);
-    }
-  }
-});
-
-document.addEventListener('touchstart', e => {
-  const lb = document.getElementById('lightboxOverlay');
-  if (lb && lb.classList.contains('active')) {
-    touchStartX = e.changedTouches[0].screenX;
-  }
-}, { passive: true });
-
-document.addEventListener('touchend', e => {
-  const lb = document.getElementById('lightboxOverlay');
-  if (lb && lb.classList.contains('active')) {
-    touchEndX = e.changedTouches[0].screenX;
-    handleLightboxSwipe();
-  }
-}, { passive: true });
-
-function handleLightboxSwipe() {
-  const swipeThreshold = 50;
-  const diff = touchStartX - touchEndX;
-  if (Math.abs(diff) > swipeThreshold) {
-    if (diff > 0) {
-      navigateLightbox(1);
-    } else {
-      navigateLightbox(-1);
-    }
-  }
-}
+window.addEventListener('hashchange', handleRoute);
