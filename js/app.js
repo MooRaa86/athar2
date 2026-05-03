@@ -147,6 +147,18 @@ function renderTeam() {
   `).join('');
 }
 
+// Helper: Convert text with \n to HTML paragraphs
+function formatTextWithLineBreaks(text) {
+  if (!text) return '';
+  // Split by double newlines first to preserve paragraph breaks
+  const paragraphs = text.split(/\n\s*\n/);
+  return paragraphs.map(p => {
+    // Replace single newlines with <br> within a paragraph
+    const formattedPara = p.replace(/\n/g, '<br>');
+    return `<p>${formattedPara}</p>`;
+  }).join('');
+}
+
 function openDetail(id, skipHash = false) {
   if (!skipHash) { currentRoute = 'site-' + id; window.location.hash = currentRoute; }
   const s = sites.find(x => x.id === id);
@@ -212,7 +224,7 @@ function openDetail(id, skipHash = false) {
         </div>
         <div class="detail-sidebar">
           <h3>${t.siteInfo}</h3>
-          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}</td><td class="info-value">${v}</td></tr>`).join('')}</table>
+          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}</td><td class="info-value">${v}</td><tr>`).join('')}</table>
           <div class="timeline-section">
             <h3 style="margin-top:2rem">${t.timeline}</h3>
             ${tl2.map(item => `
@@ -503,6 +515,9 @@ function openInnerPlace(siteId, placeIdx) {
   const galleryLbl = l === 'ar' ? 'معرض الصور' : '图片画廊';
   const locLbl = l === 'ar' ? 'الموقع على الخريطة' : '地图位置';
 
+  // Format description text with proper line breaks
+  const formattedDescription = formatTextWithLineBreaks(place.text);
+
   let panel = document.getElementById('innerPlacePanel');
   if (!panel) {
     panel = document.createElement('div');
@@ -523,7 +538,7 @@ function openInnerPlace(siteId, placeIdx) {
     </div>
     <div class="ipp-body">
       <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
-      <div class="ipp-desc">${place.text}</div>
+      <div class="ipp-desc">${formattedDescription}</div>
       ${(place.images || []).length > 0 ? `
         <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
         <div class="ipp-gallery">
