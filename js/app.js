@@ -149,7 +149,12 @@ function formatTextWithLineBreaks(text) {
   }).join('');
 }
 
-// ===== INNER PLACE PANEL =====
+// Global variables for inner place navigation
+let currentSiteId = null;
+let currentInnerPlaceIndex = null;
+let isViewingInnerPlace = false;
+
+// ===== OPEN INNER PLACE AS FULL PAGE (inside detail overlay) =====
 function openInnerPlace(siteId, placeIdx) {
   const s = sites.find(x => x.id === siteId);
   if (!s || !s.innerPlaces) return;
@@ -157,63 +162,94 @@ function openInnerPlace(siteId, placeIdx) {
   const place = s.innerPlaces[l][placeIdx];
   if (!place) return;
 
-  const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
-  const backLbl = l === 'ar' ? '→ العودة' : '← 返回';
+  // Store current location for back button
+  currentSiteId = siteId;
+  currentInnerPlaceIndex = placeIdx;
+  isViewingInnerPlace = true;
+
+  // Update hash for browser navigation
+  currentRoute = 'innerplace-' + siteId + '-' + placeIdx;
+  window.location.hash = currentRoute;
+
+  const backLbl = l === 'ar' ? '← العودة إلى الموقع الرئيسي' : '← 返回主站点';
   const galleryLbl = l === 'ar' ? 'معرض الصور' : '图片画廊';
   const locLbl = l === 'ar' ? 'الموقع على الخريطة' : '地图位置';
+  const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
 
   const formattedDescription = formatTextWithLineBreaks(place.text);
 
-  let panel = document.getElementById('innerPlacePanel');
-  if (!panel) {
-    panel = document.createElement('div');
-    panel.className = 'inner-place-panel';
-    panel.id = 'innerPlacePanel';
-    document.body.appendChild(panel);
-  }
+  // Get all images including the first one
+  const allImages = place.images || [];
 
-  panel.innerHTML = `
-    <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
-    <div class="ipp-hero">
-      ${place.images && place.images.length > 0 ?
-      `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox([${place.images.map(img => `'${img}'`).join(',')}], 0)" style="cursor: zoom-in;">` :
-      `<div class="ipp-hero-placeholder" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px; display: flex; align-items: center; justify-content: center;">
-           <span class="ipp-hero-icon" style="font-size: 64px;">${place.icon}</span>
-         </div>`
-  }
-      <div class="ipp-hero-overlay"></div>
-      <div class="ipp-hero-content">
-        <span class="ipp-hero-icon">${place.icon}</span>
-        <h1 class="ipp-hero-title">${place.title}</h1>
-      </div>
+  // Build gallery images (all images including first)
+  const galleryHtml = allImages.length > 0 ? `
+    <div class="detail-section-hd">
+      <span class="detail-section-glyph">📸</span>
+      <h3>${galleryLbl}</h3>
     </div>
-    <div class="ipp-body">
-      <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
-      <div class="ipp-desc">${formattedDescription}</div>
-      ${(place.images || []).length > 0 ? `
-        <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
-        <div class="ipp-gallery">
-          ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox([${place.images.map(img => `'${img}'`).join(',')}], ${idx})" style="cursor: zoom-in;">`).join('')}
+    <div class="inner-place-gallery">
+      ${allImages.map((img, idx) =>
+      `<img class="inner-place-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox([${allImages.map(img => `'${img}'`).join(',')}], ${idx})">`
+  ).join('')}
+    </div>
+  ` : '';
+
+  // Build full page content
+  const fullContent = `
+    <div class="inner-place-full">
+      <div class="inner-place-hero">
+        ${allImages.length > 0 ?
+      `<img class="inner-place-hero-img" src="${allImages[0]}" alt="${place.title}" onclick="openLightbox([${allImages.map(img => `'${img}'`).join(',')}], 0)">` :
+      `<div class="inner-place-hero-placeholder">
+             <span class="inner-place-hero-icon">${place.icon}</span>
+           </div>`
+  }
+        <div class="inner-place-hero-overlay"></div>
+        <div class="inner-place-hero-content">
+          <span class="inner-place-hero-icon">${place.icon}</span>
+          <h1 class="inner-place-hero-title">${place.title}</h1>
         </div>
-      ` : ''}
-      ${place.mapUrl ? `
-        <div class="detail-section-hd"><span class="detail-section-glyph">🗺</span><h3>${locLbl}</h3></div>
-        <div class="ipp-map-section">
-          <a href="${place.mapUrl}" target="_blank" rel="noopener" class="ipp-map-btn">${mapLbl}</a>
+        <button class="inner-place-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
+      </div>
+      <div class="inner-place-body">
+        <div class="inner-place-description">
+          ${formattedDescription}
         </div>
-      ` : ''}
+        
+        ${galleryHtml}
+        
+        ${place.mapUrl ? `
+          <div class="detail-section-hd">
+            <span class="detail-section-glyph">🗺</span>
+            <h3>${locLbl}</h3>
+          </div>
+          <div class="inner-place-map-section">
+            <a href="${place.mapUrl}" target="_blank" rel="noopener" class="inner-place-map-btn">${mapLbl}</a>
+          </div>
+        ` : ''}
+      </div>
     </div>
   `;
 
-  panel.classList.add('active');
-  panel.scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  // Replace detail content with inner place content
+  document.getElementById('detailContent').innerHTML = fullContent;
+
+  // Scroll to top
+  const overlay = document.getElementById('detailOverlay');
+  if (overlay) overlay.scrollTop = 0;
 }
 
 function closeInnerPlace() {
-  const panel = document.getElementById('innerPlacePanel');
-  if (panel) panel.classList.remove('active');
-  document.body.style.overflow = '';
+  // Re-render the original site detail
+  if (currentSiteId) {
+    isViewingInnerPlace = false;
+    // Update hash back to site
+    currentRoute = 'site-' + currentSiteId;
+    window.location.hash = currentRoute;
+    openDetail(currentSiteId, true);
+    currentSiteId = null;
+    currentInnerPlaceIndex = null;
+  }
 }
 
 // ===== CINEMATIC MUSEUM-STYLE VERTICAL SECTIONS FOR INNER PLACES =====
@@ -222,7 +258,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
   const isRtl = lang === 'ar';
 
   // Alternate image sizes for visual rhythm
-  // Pattern: large, small, large, small, extra-large, medium, etc.
   const imageHeightPattern = [520, 320, 480, 280, 560, 350, 500, 300];
 
   return `
@@ -237,17 +272,13 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
     const imgUrl = p.images && p.images[0] ? p.images[0] : null;
     const placeNumber = String(idx + 1).padStart(2, '0');
     const isEven = idx % 2 === 0;
-    // Alternate: even sections = text left, image right; odd sections = image left, text right
     const textFirst = isEven;
-    // Get image height from pattern
     const imgHeight = imageHeightPattern[idx % imageHeightPattern.length];
     const isLargeImage = imgHeight >= 480;
 
-    // Prepare text content
     const label = isRtl ? `الخطوة ${placeNumber}` : `Step ${placeNumber}`;
     const moreLabel = isRtl ? 'استكشف المكان' : 'Explore Place';
 
-    // Truncate description to reasonable length
     let description = p.text;
     if (description.length > 200) {
       description = description.substring(0, 200) + '...';
@@ -257,7 +288,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
       <div class="cinematic-section cinematic-section-${idx}" data-step="${placeNumber}">
         <div class="cinematic-container">
           ${textFirst ? `
-            <!-- Text Column (Left) -->
             <div class="cinematic-text-col fade-in-up">
               <div class="cinematic-step-label">${label}</div>
               <h3 class="cinematic-step-title">${p.title}</h3>
@@ -267,7 +297,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
                 <span class="btn-arrow">${isRtl ? '←' : '→'}</span>
               </button>
             </div>
-            <!-- Image Column (Right) -->
             <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up delay-1">
               <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
                 ${imgUrl ?
@@ -281,7 +310,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
               </div>
             </div>
           ` : `
-            <!-- Image Column (Left) -->
             <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up">
               <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
                 ${imgUrl ?
@@ -294,7 +322,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
                 <div class="cinematic-img-number">${placeNumber}</div>
               </div>
             </div>
-            <!-- Text Column (Right) -->
             <div class="cinematic-text-col fade-in-up delay-1">
               <div class="cinematic-step-label">${label}</div>
               <h3 class="cinematic-step-title">${p.title}</h3>
@@ -316,7 +343,10 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
 
 // ===== UPDATED openDetail FUNCTION =====
 function openDetail(id, skipHash = false) {
-  if (!skipHash) { currentRoute = 'site-' + id; window.location.hash = currentRoute; }
+  if (!skipHash) {
+    currentRoute = 'site-' + id;
+    window.location.hash = currentRoute;
+  }
   const s = sites.find(x => x.id === id);
   const l = currentLang;
   const t = T[l];
@@ -345,7 +375,7 @@ function openDetail(id, skipHash = false) {
     zh: { desc: '地点介绍', video: '视频导览', src: '参考资料' }
   }[l];
 
-  document.getElementById('detailContent').innerHTML = `
+  const fullContent = `
     <div class="detail-hero">
       <img class="detail-hero-img" src="${s.heroImg}" alt="${tl}">
       <div class="detail-hero-overlay"></div>
@@ -380,7 +410,7 @@ function openDetail(id, skipHash = false) {
         </div>
         <div class="detail-sidebar">
           <h3>${t.siteInfo}</h3>
-          <table class="info-table">${info.map(([k, v]) => `<td><td class="info-label">${k}<\/td><td class="info-value">${v}<\/td><\/tr>`).join('')}<\/table>
+          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}<\/td><td class="info-value">${v}<\/td><\/tr>`).join('')}<\/table>
           <div class="timeline-section">
             <h3 style="margin-top:2rem">${t.timeline}</h3>
             ${tl2.map(item => `
@@ -398,7 +428,7 @@ function openDetail(id, skipHash = false) {
       <!-- CINEMATIC INNER PLACES SECTIONS -->
       ${innerPlacesHtml}
 
-      <!-- PYRAMID GROUPS (Giza only) - UNCHANGED -->
+      <!-- PYRAMID GROUPS (Giza only) -->
       ${s.pyramidGroups ? (() => {
     const groups = s.pyramidGroups[l];
     const groupLbl = l === 'ar' ? 'المجموعات الهرمية الملكية الثلاث' : '三座王室金字塔建筑群';
@@ -427,7 +457,7 @@ function openDetail(id, skipHash = false) {
           </div>`;
   })() : ''}
 
-      <!-- ARCH ELEMENTS GRID (Giza only) - UNCHANGED -->
+      <!-- ARCH ELEMENTS GRID (Giza only) -->
       ${s.archElements ? (() => {
     const elems = s.archElements[l];
     const archLbl = l === 'ar' ? 'العناصر المعمارية الثلاثة عشر للمجمع' : '建筑群13个建筑元素';
@@ -444,7 +474,7 @@ function openDetail(id, skipHash = false) {
           </div>`;
   })() : ''}
 
-      <!-- PYRAMID PASSAGES (ORIGINAL - UNCHANGED, KEPT AS IS) -->
+      <!-- PYRAMID PASSAGES -->
       ${s.pyramidPassages ? (() => {
     const pp = s.pyramidPassages[l];
     const lbls = {
@@ -501,7 +531,9 @@ function openDetail(id, skipHash = false) {
     </div>
   `;
 
-  // Inject CSS for cinematic museum-style layout
+  document.getElementById('detailContent').innerHTML = fullContent;
+
+  // Inject CSS if not already present
   if (!document.getElementById('cinematic-styles')) {
     const style = document.createElement('style');
     style.id = 'cinematic-styles';
@@ -560,7 +592,6 @@ function openDetail(id, skipHash = false) {
         align-items: center;
       }
       
-      /* Text Column Styling */
       .cinematic-text-col {
         padding: 1rem;
       }
@@ -620,7 +651,6 @@ function openDetail(id, skipHash = false) {
         transform: translateX(3px);
       }
       
-      /* Image Column Styling */
       .cinematic-img-col {
         position: relative;
       }
@@ -679,7 +709,6 @@ function openDetail(id, skipHash = false) {
         pointer-events: none;
       }
       
-      /* Image size variations */
       .img-large .cinematic-img-wrapper {
         box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       }
@@ -689,7 +718,6 @@ function openDetail(id, skipHash = false) {
         margin: 2rem 0;
       }
       
-      /* Animation classes */
       .fade-in-up {
         opacity: 0;
         transform: translateY(30px);
@@ -707,6 +735,167 @@ function openDetail(id, skipHash = false) {
         }
       }
       
+      /* Inner Place Full Page Styles */
+      .inner-place-full {
+        width: 100%;
+        min-height: 100%;
+      }
+      
+      .inner-place-hero {
+        position: relative;
+        height: 60vh;
+        min-height: 400px;
+        overflow: hidden;
+        background: #1a1a2e;
+      }
+      
+      .inner-place-hero-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: sepia(15%) brightness(0.75);
+        cursor: zoom-in;
+      }
+      
+      .inner-place-hero-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2a251a, #1a1710);
+      }
+      
+      .inner-place-hero-icon {
+        font-size: 5rem;
+        opacity: 0.5;
+      }
+      
+      .inner-place-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(13,10,5,0.3), rgba(13,10,5,0.15) 40%, rgba(13,10,5,0.88) 80%, var(--obsidian));
+      }
+      
+      .inner-place-hero-content {
+        position: absolute;
+        bottom: 2rem;
+        left: 2rem;
+        right: 2rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      }
+      
+      .inner-place-hero-content .inner-place-hero-icon {
+        font-size: 2.5rem;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      
+      .inner-place-hero-title {
+        font-family: 'Amiri', serif;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        color: var(--sand);
+        margin: 0;
+      }
+      
+      .inner-place-back-btn {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 10;
+        background: rgba(13,10,5,0.7);
+        border: 1px solid rgba(201,168,76,0.4);
+        color: var(--gold-light);
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 30px;
+        backdrop-filter: blur(5px);
+        font-family: inherit;
+      }
+      
+      .inner-place-back-btn:hover {
+        background: rgba(201,168,76,0.2);
+        border-color: var(--gold);
+      }
+      
+      .inner-place-body {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      
+      .inner-place-description {
+        font-size: 1rem;
+        color: var(--sand-dark);
+        line-height: 2.1;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: var(--stone);
+        border: 1px solid rgba(201,168,76,0.12);
+        border-radius: 8px;
+      }
+      
+      .inner-place-description p {
+        margin-bottom: 1rem;
+      }
+      
+      .inner-place-description p:last-child {
+        margin-bottom: 0;
+      }
+      
+      .inner-place-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      
+      .inner-place-gallery-img {
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        filter: sepia(15%) brightness(0.85);
+        transition: filter 0.4s, transform 0.3s;
+        border: 1px solid rgba(201,168,76,0.1);
+        cursor: zoom-in;
+        border-radius: 8px;
+      }
+      
+      .inner-place-gallery-img:hover {
+        filter: sepia(0%) brightness(1);
+        transform: scale(0.98);
+      }
+      
+      .inner-place-map-section {
+        text-align: center;
+        padding: 1rem 0 2rem;
+      }
+      
+      .inner-place-map-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.85rem 2rem;
+        border: 1px solid var(--gold);
+        color: var(--gold-light);
+        text-decoration: none;
+        font-size: 0.9rem;
+        letter-spacing: 0.12em;
+        transition: all 0.4s;
+        font-family: inherit;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 30px;
+      }
+      
+      .inner-place-map-btn:hover {
+        background: var(--gold);
+        color: var(--obsidian);
+        box-shadow: 0 0 30px rgba(201,168,76,0.2);
+      }
+      
       /* RTL Support */
       html[data-lang="ar"] .cinematic-step-btn:hover {
         transform: translateX(-5px);
@@ -721,7 +910,12 @@ function openDetail(id, skipHash = false) {
         left: 1rem;
       }
       
-      /* Responsive Design */
+      html[data-lang="ar"] .inner-place-back-btn {
+        left: auto;
+        right: 1.5rem;
+      }
+      
+      /* Responsive */
       @media (max-width: 900px) {
         .cinematic-container {
           grid-template-columns: 1fr;
@@ -746,21 +940,13 @@ function openDetail(id, skipHash = false) {
           font-size: 1.5rem;
         }
         
-        .cinematic-step-desc {
-          font-size: 0.9rem;
+        .inner-place-hero {
+          height: 50vh;
+          min-height: 350px;
         }
         
-        .cinematic-step-btn {
-          margin: 0 auto;
-        }
-        
-        .cinematic-img {
-          max-height: 400px;
-          object-fit: cover;
-        }
-        
-        .cinematic-header-title {
-          font-size: 1.4rem;
+        .inner-place-body {
+          padding: 1.5rem;
         }
       }
       
@@ -773,8 +959,21 @@ function openDetail(id, skipHash = false) {
           font-size: 1.3rem;
         }
         
-        .cinematic-container {
-          gap: 1.5rem;
+        .inner-place-hero {
+          height: 40vh;
+          min-height: 300px;
+        }
+        
+        .inner-place-back-btn {
+          top: 1rem;
+          left: 1rem;
+          padding: 0.4rem 1rem;
+          font-size: 0.75rem;
+        }
+        
+        html[data-lang="ar"] .inner-place-back-btn {
+          left: auto;
+          right: 1rem;
         }
       }
       
@@ -840,26 +1039,7 @@ function openDetail(id, skipHash = false) {
       .sphinx-info-block { border-left: 2px solid var(--gold-dark); padding-left: 1rem; }
       .sphinx-info-title { font-family: 'Amiri', serif; font-size: 1rem; color: var(--gold-light); margin-bottom: 0.3rem; }
       .sphinx-info-text { font-size: 0.8rem; color: var(--sand-dark); line-height: 1.6; }
-      .inner-place-panel { position: fixed; top: 0; right: 0; width: 90%; max-width: 900px; height: 100vh; background: var(--obsidian); z-index: 1000; overflow-y: auto; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); box-shadow: -5px 0 30px rgba(0,0,0,0.5); }
-      .inner-place-panel.active { transform: translateX(0); }
-      .ipp-close { position: fixed; top: 1rem; left: 1rem; z-index: 1010; width: 44px; height: 44px; border: 1px solid rgba(201,168,76,0.5); background: rgba(13,10,5,0.85); color: var(--gold-light); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; border-radius: 50%; backdrop-filter: blur(5px); }
-      .ipp-close:hover { background: var(--gold); color: var(--obsidian); border-color: var(--gold); }
-      .ipp-hero { position: relative; height: 50vh; min-height: 300px; overflow: hidden; background: #1a1a2e; }
-      .ipp-hero-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(15%) brightness(0.75); cursor: zoom-in; }
-      .ipp-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,10,5,0.3), rgba(13,10,5,0.15) 40%, rgba(13,10,5,0.88) 80%, var(--obsidian)); }
-      .ipp-hero-content { position: absolute; bottom: 2rem; left: 2rem; right: 2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-      .ipp-hero-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
-      .ipp-hero-title { font-family: 'Amiri', serif; font-size: clamp(1.8rem, 5vw, 3rem); color: var(--sand); margin: 0; }
-      .ipp-body { max-width: 800px; margin: 0 auto; padding: 2rem; }
-      .ipp-back-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.5rem; border: 1px solid rgba(201,168,76,0.3); color: var(--sand-dark); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; transition: all 0.3s; font-family: inherit; background: transparent; cursor: pointer; margin-bottom: 2rem; border-radius: 4px; }
-      .ipp-back-btn:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(201,168,76,0.1); }
-      .ipp-desc { font-size: 1rem; color: var(--sand-dark); line-height: 2.1; margin-bottom: 2.5rem; padding: 1.5rem 2rem; background: var(--stone); border: 1px solid rgba(201,168,76,0.12); border-radius: 4px; }
-      .ipp-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.8rem; margin-bottom: 2.5rem; }
-      .ipp-gallery-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: sepia(15%) brightness(0.85); transition: filter 0.4s, transform 0.3s; border: 1px solid rgba(201,168,76,0.1); cursor: zoom-in; border-radius: 4px; }
-      .ipp-gallery-img:hover { filter: sepia(0%) brightness(1); transform: scale(0.98); }
-      .ipp-map-btn { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.85rem 2rem; border: 1px solid var(--gold); color: var(--gold-light); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.12em; transition: all 0.4s; font-family: inherit; background: transparent; cursor: pointer; border-radius: 4px; }
-      .ipp-map-btn:hover { background: var(--gold); color: var(--obsidian); box-shadow: 0 0 30px rgba(201,168,76,0.2); }
-      .ipp-map-section { text-align: center; padding: 1rem 0 2rem; }
+      
       @media (max-width: 900px) {
         .pyramid-groups-wrap { grid-template-columns:1fr; }
         .pg-img-wrap { height:220px; }
@@ -892,6 +1072,10 @@ function closeDetail() {
   } else {
     currentRoute = 'home'; window.location.hash = currentRoute;
   }
+  // Reset inner place navigation variables
+  currentSiteId = null;
+  currentInnerPlaceIndex = null;
+  isViewingInnerPlace = false;
 }
 
 // Open lightbox with gallery array
@@ -1071,7 +1255,6 @@ function handleRoute() {
     showSection('home', true);
     return;
   }
-  closeInnerPlace();
   if (['home', 'civs', 'museums', 'about', 'team'].includes(hash)) {
     document.getElementById('detailOverlay').classList.remove('active');
     document.body.style.overflow = '';
@@ -1089,6 +1272,20 @@ function handleRoute() {
       showSection('home', true);
       openRegion(s.region, true);
       openDetail(sId, true);
+    }
+  } else if (hash.startsWith('innerplace-')) {
+    // Handle direct navigation to inner place
+    const parts = hash.replace('innerplace-', '').split('-');
+    const siteId = parts[0];
+    const placeIdx = parseInt(parts[1]);
+    const s = sites.find(x => x.id === siteId);
+    if (s) {
+      showSection('home', true);
+      openRegion(s.region, true);
+      openDetail(siteId, true);
+      setTimeout(() => {
+        openInnerPlace(siteId, placeIdx);
+      }, 100);
     }
   }
 }
@@ -1117,9 +1314,16 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const lb = document.getElementById('lightboxOverlay');
     if (lb && lb.classList.contains('active')) { closeLightbox(); return; }
-    const ipp = document.getElementById('innerPlacePanel');
-    if (ipp && ipp.classList.contains('active')) closeInnerPlace();
-    else closeDetail();
+    else {
+      const detailOverlay = document.getElementById('detailOverlay');
+      if (detailOverlay && detailOverlay.classList.contains('active')) {
+        if (isViewingInnerPlace) {
+          closeInnerPlace();
+        } else {
+          closeDetail();
+        }
+      }
+    }
   }
 });
 
