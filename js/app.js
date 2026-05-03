@@ -32,12 +32,10 @@ function openRegion(regionId, skipHash = false) {
 
   const regionSites = sites.filter(s => s.region === regionId);
 
-  // Hide regions view, show sites view
   document.getElementById('regionsView').style.display = 'none';
   const sitesView = document.getElementById('regionSitesView');
   sitesView.style.display = '';
 
-  // Set title and count
   document.getElementById('regionSitesTitle').textContent = r.title[l];
   const count = regionSites.length;
   document.getElementById('regionSitesCount').textContent =
@@ -45,17 +43,11 @@ function openRegion(regionId, skipHash = false) {
           ? (l === 'ar' ? `${count} ${count === 1 ? 'موقع أثري' : 'مواقع أثرية'}` : `${count} 个考古遗址`)
           : (l === 'ar' ? 'لا توجد مواقع مضافة بعد' : '暂无遗址');
 
-  // Update back button text
   const backSpan = document.querySelector('#regionBackBtn span[data-ar]');
   if (backSpan) backSpan.textContent = l === 'ar' ? backSpan.dataset.ar : backSpan.dataset.zh;
 
-  // Render the sites for this region
   renderSitesForRegion(regionSites);
-
-  // Animate fade-in
   sitesView.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
-
-  // Store current region for lang switch
   window._currentRegionId = regionId;
 }
 
@@ -150,15 +142,179 @@ function renderTeam() {
 // Helper: Convert text with \n to HTML paragraphs
 function formatTextWithLineBreaks(text) {
   if (!text) return '';
-  // Split by double newlines first to preserve paragraph breaks
   const paragraphs = text.split(/\n\s*\n/);
   return paragraphs.map(p => {
-    // Replace single newlines with <br> within a paragraph
     const formattedPara = p.replace(/\n/g, '<br>');
     return `<p>${formattedPara}</p>`;
   }).join('');
 }
 
+// ===== INNER PLACE PANEL =====
+function openInnerPlace(siteId, placeIdx) {
+  const s = sites.find(x => x.id === siteId);
+  if (!s || !s.innerPlaces) return;
+  const l = currentLang;
+  const place = s.innerPlaces[l][placeIdx];
+  if (!place) return;
+
+  const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
+  const backLbl = l === 'ar' ? '→ العودة' : '← 返回';
+  const galleryLbl = l === 'ar' ? 'معرض الصور' : '图片画廊';
+  const locLbl = l === 'ar' ? 'الموقع على الخريطة' : '地图位置';
+
+  const formattedDescription = formatTextWithLineBreaks(place.text);
+
+  let panel = document.getElementById('innerPlacePanel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.className = 'inner-place-panel';
+    panel.id = 'innerPlacePanel';
+    document.body.appendChild(panel);
+  }
+
+  panel.innerHTML = `
+    <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
+    <div class="ipp-hero">
+      ${place.images && place.images.length > 0 ?
+      `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox([${place.images.map(img => `'${img}'`).join(',')}], 0)" style="cursor: zoom-in;">` :
+      `<div class="ipp-hero-placeholder" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px; display: flex; align-items: center; justify-content: center;">
+           <span class="ipp-hero-icon" style="font-size: 64px;">${place.icon}</span>
+         </div>`
+  }
+      <div class="ipp-hero-overlay"></div>
+      <div class="ipp-hero-content">
+        <span class="ipp-hero-icon">${place.icon}</span>
+        <h1 class="ipp-hero-title">${place.title}</h1>
+      </div>
+    </div>
+    <div class="ipp-body">
+      <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
+      <div class="ipp-desc">${formattedDescription}</div>
+      ${(place.images || []).length > 0 ? `
+        <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
+        <div class="ipp-gallery">
+          ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox([${place.images.map(img => `'${img}'`).join(',')}], ${idx})" style="cursor: zoom-in;">`).join('')}
+        </div>
+      ` : ''}
+      ${place.mapUrl ? `
+        <div class="detail-section-hd"><span class="detail-section-glyph">🗺</span><h3>${locLbl}</h3></div>
+        <div class="ipp-map-section">
+          <a href="${place.mapUrl}" target="_blank" rel="noopener" class="ipp-map-btn">${mapLbl}</a>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  panel.classList.add('active');
+  panel.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInnerPlace() {
+  const panel = document.getElementById('innerPlacePanel');
+  if (panel) panel.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ===== CINEMATIC MUSEUM-STYLE VERTICAL SECTIONS FOR INNER PLACES =====
+function renderInnerPlaces(siteId, innerPlacesData, lang) {
+  if (!innerPlacesData || !innerPlacesData.length) return '';
+  const isRtl = lang === 'ar';
+
+  // Alternate image sizes for visual rhythm
+  // Pattern: large, small, large, small, extra-large, medium, etc.
+  const imageHeightPattern = [520, 320, 480, 280, 560, 350, 500, 300];
+
+  return `
+    <div class="inner-places-cinematic">
+      <div class="cinematic-header">
+        <span class="cinematic-header-glyph">𓂀</span>
+        <h2 class="cinematic-header-title">${isRtl ? 'رحلة الاستكشاف' : 'Exploration Journey'}</h2>
+        <div class="cinematic-header-line"></div>
+      </div>
+      <div class="cinematic-sections">
+        ${innerPlacesData.map((p, idx) => {
+    const imgUrl = p.images && p.images[0] ? p.images[0] : null;
+    const placeNumber = String(idx + 1).padStart(2, '0');
+    const isEven = idx % 2 === 0;
+    // Alternate: even sections = text left, image right; odd sections = image left, text right
+    const textFirst = isEven;
+    // Get image height from pattern
+    const imgHeight = imageHeightPattern[idx % imageHeightPattern.length];
+    const isLargeImage = imgHeight >= 480;
+
+    // Prepare text content
+    const label = isRtl ? `الخطوة ${placeNumber}` : `Step ${placeNumber}`;
+    const moreLabel = isRtl ? 'استكشف المكان' : 'Explore Place';
+
+    // Truncate description to reasonable length
+    let description = p.text;
+    if (description.length > 200) {
+      description = description.substring(0, 200) + '...';
+    }
+
+    return `
+      <div class="cinematic-section cinematic-section-${idx}" data-step="${placeNumber}">
+        <div class="cinematic-container">
+          ${textFirst ? `
+            <!-- Text Column (Left) -->
+            <div class="cinematic-text-col fade-in-up">
+              <div class="cinematic-step-label">${label}</div>
+              <h3 class="cinematic-step-title">${p.title}</h3>
+              <div class="cinematic-step-desc">${description.replace(/\n/g, '<br>')}</div>
+              <button class="cinematic-step-btn" onclick="openInnerPlace('${siteId}', ${idx})">
+                <span>${moreLabel}</span>
+                <span class="btn-arrow">${isRtl ? '←' : '→'}</span>
+              </button>
+            </div>
+            <!-- Image Column (Right) -->
+            <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up delay-1">
+              <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
+                ${imgUrl ?
+        `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
+        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;">
+                     <span class="placeholder-icon">${p.icon}</span>
+                   </div>`
+    }
+                <div class="cinematic-img-overlay"></div>
+                <div class="cinematic-img-number">${placeNumber}</div>
+              </div>
+            </div>
+          ` : `
+            <!-- Image Column (Left) -->
+            <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up">
+              <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
+                ${imgUrl ?
+        `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
+        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;">
+                     <span class="placeholder-icon">${p.icon}</span>
+                   </div>`
+    }
+                <div class="cinematic-img-overlay"></div>
+                <div class="cinematic-img-number">${placeNumber}</div>
+              </div>
+            </div>
+            <!-- Text Column (Right) -->
+            <div class="cinematic-text-col fade-in-up delay-1">
+              <div class="cinematic-step-label">${label}</div>
+              <h3 class="cinematic-step-title">${p.title}</h3>
+              <div class="cinematic-step-desc">${description.replace(/\n/g, '<br>')}</div>
+              <button class="cinematic-step-btn" onclick="openInnerPlace('${siteId}', ${idx})">
+                <span>${moreLabel}</span>
+                <span class="btn-arrow">${isRtl ? '←' : '→'}</span>
+              </button>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ===== UPDATED openDetail FUNCTION =====
 function openDetail(id, skipHash = false) {
   if (!skipHash) { currentRoute = 'site-' + id; window.location.hash = currentRoute; }
   const s = sites.find(x => x.id === id);
@@ -175,18 +331,18 @@ function openDetail(id, skipHash = false) {
   const facts = typeof s.facts === 'object' ? s.facts[l] : s.facts;
   const info = typeof s.info === 'object' ? s.info[l] : s.info;
   const tl2 = typeof s.timeline === 'object' ? s.timeline[l] : s.timeline;
-  const places = s.innerPlaces ? (s.innerPlaces[l] || s.innerPlaces) : null;
 
-  // Labels
-  const lbl = {
-    ar: {
-      desc: 'تعريف بالمكان', arch: 'الوصف المعماري والنقوش', places: 'أهم الأماكن داخل الموقع',
-      video: 'جولة مصورة', src: 'المصادر'
-    },
-    zh: {
-      desc: '地点介绍', arch: '建筑描述与铭文', places: '遗址内重要地点',
-      video: '视频导览', src: '参考资料'
+  let innerPlacesHtml = '';
+  if (s.innerPlaces) {
+    const placesData = s.innerPlaces[l] || s.innerPlaces;
+    if (placesData && placesData.length) {
+      innerPlacesHtml = renderInnerPlaces(s.id, placesData, l);
     }
+  }
+
+  const lbl = {
+    ar: { desc: 'تعريف بالمكان', video: 'جولة مصورة', src: 'المصادر' },
+    zh: { desc: '地点介绍', video: '视频导览', src: '参考资料' }
   }[l];
 
   document.getElementById('detailContent').innerHTML = `
@@ -224,7 +380,7 @@ function openDetail(id, skipHash = false) {
         </div>
         <div class="detail-sidebar">
           <h3>${t.siteInfo}</h3>
-          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}</td><td class="info-value">${v}</td><tr>`).join('')}</table>
+          <table class="info-table">${info.map(([k, v]) => `<td><td class="info-label">${k}<\/td><td class="info-value">${v}<\/td><\/tr>`).join('')}<\/table>
           <div class="timeline-section">
             <h3 style="margin-top:2rem">${t.timeline}</h3>
             ${tl2.map(item => `
@@ -239,69 +395,56 @@ function openDetail(id, skipHash = false) {
         </div>
       </div>
 
-      <!-- INNER PLACES -->
-      ${places ? `
-      <div class="detail-section-hd"><span class="detail-section-glyph">𓉐</span><h3>${lbl.places}</h3></div>
-      <div class="detail-places-grid">
-        ${places.map((p, idx) => `
-          <div class="detail-place-card clickable" onclick="openInnerPlace('${s.id}', ${idx})">
-            ${p.images && p.images[0] ? `<div class="place-card-img-wrap"><img class="place-card-img" src="${p.images[0]}" loading="lazy" alt="${p.title}"><div class="place-card-img-overlay"></div></div>` : ''}
-            <div class="place-card-body">
-              <span class="detail-place-icon">${p.icon}</span>
-              <div class="detail-place-title">${p.title}</div>
-              <p class="detail-place-text">${p.text.substring(0, 100)}${p.text.length > 100 ? '...' : ''}</p>
-              <span class="place-card-cta">${currentLang === 'ar' ? 'عرض التفاصيل ←' : '查看详情 →'}</span>
-            </div>
-          </div>`).join('')}
-      </div>` : ''}
+      <!-- CINEMATIC INNER PLACES SECTIONS -->
+      ${innerPlacesHtml}
 
-      <!-- PYRAMID GROUPS (Giza only) -->
+      <!-- PYRAMID GROUPS (Giza only) - UNCHANGED -->
       ${s.pyramidGroups ? (() => {
     const groups = s.pyramidGroups[l];
     const groupLbl = l === 'ar' ? 'المجموعات الهرمية الملكية الثلاث' : '三座王室金字塔建筑群';
     return `
-      <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${groupLbl}</h3></div>
-      <div class="pyramid-groups-wrap">
-        ${groups.map(g => `
-          <div class="pyramid-group-card">
-            <div class="pg-img-wrap">
-              <img src="${g.img}" class="pg-img" loading="lazy" alt="${g.king}">
-              <div class="pg-img-overlay"></div>
-              <div class="pg-king-badge">${g.king}</div>
-            </div>
-            <div class="pg-body">
-              <div class="pg-king-title">${g.kingTitle}</div>
-              <p class="pg-king-desc">${g.kingDesc}</p>
-              <div class="pg-elements">
-                ${g.elements.map(el => `
-                  <div class="pg-el">
-                    <span class="pg-el-name">◈ ${el.name}</span>
-                    <span class="pg-el-detail">${el.detail}</span>
-                  </div>`).join('')}
-              </div>
-            </div>
-          </div>`).join('')}
-      </div>`;
+          <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${groupLbl}</h3></div>
+          <div class="pyramid-groups-wrap">
+            ${groups.map(g => `
+              <div class="pyramid-group-card">
+                <div class="pg-img-wrap">
+                  <img src="${g.img}" class="pg-img" loading="lazy" alt="${g.king}">
+                  <div class="pg-img-overlay"></div>
+                  <div class="pg-king-badge">${g.king}</div>
+                </div>
+                <div class="pg-body">
+                  <div class="pg-king-title">${g.kingTitle}</div>
+                  <p class="pg-king-desc">${g.kingDesc}</p>
+                  <div class="pg-elements">
+                    ${g.elements.map(el => `
+                      <div class="pg-el">
+                        <span class="pg-el-name">◈ ${el.name}</span>
+                        <span class="pg-el-detail">${el.detail}</span>
+                      </div>`).join('')}
+                  </div>
+                </div>
+              </div>`).join('')}
+          </div>`;
   })() : ''}
 
-      <!-- ARCH ELEMENTS GRID (Giza only) -->
+      <!-- ARCH ELEMENTS GRID (Giza only) - UNCHANGED -->
       ${s.archElements ? (() => {
     const elems = s.archElements[l];
     const archLbl = l === 'ar' ? 'العناصر المعمارية الثلاثة عشر للمجمع' : '建筑群13个建筑元素';
     return `
-      <div class="detail-section-hd"><span class="detail-section-glyph">𓉐</span><h3>${archLbl}</h3></div>
-      <div class="arch-elements-grid">
-        ${elems.map(el => `
-          <div class="arch-el-card">
-            <div class="arch-el-num">${el.num}</div>
-            <div class="arch-el-icon">${el.icon}</div>
-            <div class="arch-el-title">${el.title}</div>
-            <p class="arch-el-desc">${el.desc}</p>
-          </div>`).join('')}
-      </div>`;
+          <div class="detail-section-hd"><span class="detail-section-glyph">𓉐</span><h3>${archLbl}</h3></div>
+          <div class="arch-elements-grid">
+            ${elems.map(el => `
+              <div class="arch-el-card">
+                <div class="arch-el-num">${el.num}</div>
+                <div class="arch-el-icon">${el.icon}</div>
+                <div class="arch-el-title">${el.title}</div>
+                <p class="arch-el-desc">${el.desc}</p>
+              </div>`).join('')}
+          </div>`;
   })() : ''}
 
-      <!-- PYRAMID PASSAGES DETAILED SECTION -->
+      <!-- PYRAMID PASSAGES (ORIGINAL - UNCHANGED, KEPT AS IS) -->
       ${s.pyramidPassages ? (() => {
     const pp = s.pyramidPassages[l];
     const lbls = {
@@ -310,22 +453,12 @@ function openDetail(id, skipHash = false) {
     }[l];
 
     function renderKing(data) {
-      return `<div class="king-card">
-            <div class="king-seal">𓇼</div>
-            <div>
-              <div class="king-name">${data.king}</div>
-              <div class="king-title">${data.kingTitle}</div>
-              <p class="king-desc">${data.kingDesc}</p>
-            </div>
-          </div>`;
+      return `<div class="king-card"><div class="king-seal">𓇼</div><div><div class="king-name">${data.king}</div><div class="king-title">${data.kingTitle}</div><p class="king-desc">${data.kingDesc}</p></div></div>`;
     }
-
     function renderPassages(passages) {
       return `<div class="passage-list">${passages.map(p => `
             <div class="passage-block${p.reverse ? ' reverse' : ''}">
-              <div class="passage-img-wrap">
-                <img class="passage-img" src="${p.img}" loading="lazy" alt="${p.title}">
-              </div>
+              <div class="passage-img-wrap"><img class="passage-img" src="${p.img}" loading="lazy" alt="${p.title}"></div>
               <div class="passage-text-wrap">
                 <div class="passage-num">الممر ${p.num}</div>
                 <div class="passage-title">${p.title}</div>
@@ -334,58 +467,22 @@ function openDetail(id, skipHash = false) {
               </div>
             </div>`).join('')}</div>`;
     }
-
     function renderComplex(items) {
       return `<div class="complex-grid">${items.map(c => `
             <div class="complex-card">
               <div class="complex-img-wrap"><img class="complex-img" src="${c.img}" loading="lazy" alt="${c.title}"></div>
-              <div class="complex-body">
-                <div class="complex-title">${c.title}</div>
-                <p class="complex-desc">${c.desc}</p>
-              </div>
+              <div class="complex-body"><div class="complex-title">${c.title}</div><p class="complex-desc">${c.desc}</p></div>
             </div>`).join('')}</div>`;
     }
-
     function renderSphinx(data) {
-      return `<div class="sphinx-block">
-            <div class="sphinx-img-wrap"><img class="sphinx-img" src="images/sphinx_wide.jpg" loading="lazy" alt="${data.king}"></div>
-            <div class="sphinx-info">
-              ${data.desc.map(d => `<div class="sphinx-info-block"><div class="sphinx-info-title">${d.title}</div><p class="sphinx-info-text">${d.text}</p></div>`).join('')}
-            </div>
-          </div>`;
+      return `<div class="sphinx-block"><div class="sphinx-img-wrap"><img class="sphinx-img" src="images/sphinx_wide.jpg" loading="lazy" alt="${data.king}"></div><div class="sphinx-info">${data.desc.map(d => `<div class="sphinx-info-block"><div class="sphinx-info-title">${d.title}</div><p class="sphinx-info-text">${d.text}</p></div>`).join('')}</div></div>`;
     }
-
     return `
-      <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${lbls.title}</h3></div>
-
-      <div class="pyr-section">
-        <div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.khufu}</h2></div></div>
-        ${renderKing(pp.khufu)}
-        <div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>
-        ${renderPassages(pp.khufu.passages)}
-      </div>
-
-      <div class="pyr-section">
-        <div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.khafre}</h2></div></div>
-        ${renderKing(pp.khafre)}
-        <div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>
-        ${renderPassages(pp.khafre.passages)}
-        <div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓉐</span><h3>${lbls.complex}</h3></div>
-        ${renderComplex(pp.khafre.complex)}
-      </div>
-
-      <div class="pyr-section">
-        <div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.menkaure}</h2></div></div>
-        ${renderKing(pp.menkaure)}
-        <div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>
-        ${renderPassages(pp.menkaure.passages)}
-      </div>
-
-      <div class="pyr-section">
-        <div class="pyr-section-hd"><span class="pyr-section-glyph">𓁿</span><div><h2>${lbls.sphinx}</h2></div></div>
-        ${renderKing(pp.sphinx)}
-        ${renderSphinx(pp.sphinx)}
-      </div>`;
+          <div class="detail-section-hd"><span class="detail-section-glyph">𓇼</span><h3>${lbls.title}</h3></div>
+          <div class="pyr-section"><div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.khufu}</h2></div></div>${renderKing(pp.khufu)}<div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>${renderPassages(pp.khufu.passages)}</div>
+          <div class="pyr-section"><div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.khafre}</h2></div></div>${renderKing(pp.khafre)}<div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>${renderPassages(pp.khafre.passages)}<div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓉐</span><h3>${lbls.complex}</h3></div>${renderComplex(pp.khafre.complex)}</div>
+          <div class="pyr-section"><div class="pyr-section-hd"><span class="pyr-section-glyph">𓇼</span><div><h2>${lbls.menkaure}</h2></div></div>${renderKing(pp.menkaure)}<div class="detail-section-hd" style="margin-top:1rem"><span class="detail-section-glyph">𓂀</span><h3>${lbls.passages}</h3></div>${renderPassages(pp.menkaure.passages)}</div>
+          <div class="pyr-section"><div class="pyr-section-hd"><span class="pyr-section-glyph">𓁿</span><div><h2>${lbls.sphinx}</h2></div></div>${renderKing(pp.sphinx)}${renderSphinx(pp.sphinx)}</div>`;
   })() : ''}
 
       <!-- VIDEO -->
@@ -399,19 +496,292 @@ function openDetail(id, skipHash = false) {
 
       <!-- GALLERY -->
       <div class="detail-section-hd"><span class="detail-section-glyph">𓃀</span><h3>${t.gallery}</h3></div>
-      <div class="detail-gallery">${s.gallery.map(img => `<img class="gallery-img" src="${img}" loading="lazy" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">`).join('')}</div>
+      <div class="detail-gallery">${s.gallery.map(img => `<img class="gallery-img" src="${img}" loading="lazy" onclick="openLightbox([${s.gallery.map(img => `'${img}'`).join(',')}], ${s.gallery.findIndex(i => i === img)})" style="cursor: zoom-in;">`).join('')}</div>
 
     </div>
   `;
 
-  // inject extra CSS for new elements if not yet added
-  if (!document.getElementById('detail-extra-styles')) {
+  // Inject CSS for cinematic museum-style layout
+  if (!document.getElementById('cinematic-styles')) {
     const style = document.createElement('style');
-    style.id = 'detail-extra-styles';
+    style.id = 'cinematic-styles';
     style.textContent = `
+      /* Cinematic Museum-Style Layout */
+      .inner-places-cinematic {
+        margin: 3rem 0 2rem;
+      }
+      
+      .cinematic-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+      
+      .cinematic-header-glyph {
+        font-size: 2.5rem;
+        color: var(--gold);
+        opacity: 0.7;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      
+      .cinematic-header-title {
+        font-family: 'Amiri', serif;
+        font-size: 1.8rem;
+        color: var(--gold-light);
+        letter-spacing: 0.1em;
+        margin: 0;
+        font-weight: 400;
+      }
+      
+      .cinematic-header-line {
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        margin: 1rem auto 0;
+      }
+      
+      .cinematic-section {
+        padding: 4rem 0;
+        border-bottom: 1px solid rgba(201,168,76,0.08);
+      }
+      
+      .cinematic-section:last-child {
+        border-bottom: none;
+      }
+      
+      .cinematic-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 40% 60%;
+        gap: 4rem;
+        align-items: center;
+      }
+      
+      /* Text Column Styling */
+      .cinematic-text-col {
+        padding: 1rem;
+      }
+      
+      .cinematic-step-label {
+        font-size: 0.8rem;
+        color: var(--gold);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+      
+      .cinematic-step-title {
+        font-family: 'Amiri', serif;
+        font-size: 1.8rem;
+        color: var(--sand-light);
+        margin: 0 0 1.2rem 0;
+        line-height: 1.3;
+        font-weight: 500;
+      }
+      
+      .cinematic-step-desc {
+        font-size: 0.95rem;
+        color: var(--sand-dark);
+        line-height: 1.8;
+        margin-bottom: 1.8rem;
+      }
+      
+      .cinematic-step-btn {
+        background: transparent;
+        border: 1px solid rgba(201,168,76,0.3);
+        padding: 0.7rem 1.5rem;
+        color: var(--gold-light);
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        border-radius: 30px;
+        font-family: inherit;
+      }
+      
+      .cinematic-step-btn:hover {
+        background: rgba(201,168,76,0.15);
+        border-color: var(--gold);
+        transform: translateX(5px);
+      }
+      
+      .btn-arrow {
+        transition: transform 0.3s ease;
+      }
+      
+      .cinematic-step-btn:hover .btn-arrow {
+        transform: translateX(3px);
+      }
+      
+      /* Image Column Styling */
+      .cinematic-img-col {
+        position: relative;
+      }
+      
+      .cinematic-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      
+      .cinematic-img {
+        width: 100%;
+        transition: transform 0.5s ease, filter 0.4s ease;
+        filter: sepia(15%) brightness(0.85);
+        border-radius: 8px;
+      }
+      
+      .cinematic-img-wrapper:hover .cinematic-img {
+        transform: scale(1.03);
+        filter: sepia(0%) brightness(0.95);
+      }
+      
+      .cinematic-img-placeholder {
+        background: linear-gradient(135deg, #2a251a, #1a1710);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+      }
+      
+      .placeholder-icon {
+        font-size: 4rem;
+        opacity: 0.5;
+      }
+      
+      .cinematic-img-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40%;
+        background: linear-gradient(to top, rgba(13,10,5,0.6), transparent);
+        pointer-events: none;
+        border-radius: 8px;
+      }
+      
+      .cinematic-img-number {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        font-family: 'Amiri', serif;
+        font-size: 2rem;
+        font-weight: bold;
+        color: rgba(201,168,76,0.35);
+        pointer-events: none;
+      }
+      
+      /* Image size variations */
+      .img-large .cinematic-img-wrapper {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      }
+      
+      .img-small .cinematic-img-wrapper {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        margin: 2rem 0;
+      }
+      
+      /* Animation classes */
+      .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease forwards;
+      }
+      
+      .delay-1 {
+        animation-delay: 0.2s;
+      }
+      
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* RTL Support */
+      html[data-lang="ar"] .cinematic-step-btn:hover {
+        transform: translateX(-5px);
+      }
+      
+      html[data-lang="ar"] .cinematic-step-btn:hover .btn-arrow {
+        transform: translateX(-3px);
+      }
+      
+      html[data-lang="ar"] .cinematic-img-number {
+        right: auto;
+        left: 1rem;
+      }
+      
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .cinematic-container {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          padding: 0 1.5rem;
+        }
+        
+        .cinematic-section {
+          padding: 3rem 0;
+        }
+        
+        .cinematic-text-col {
+          text-align: center;
+          order: 2;
+        }
+        
+        .cinematic-img-col {
+          order: 1;
+        }
+        
+        .cinematic-step-title {
+          font-size: 1.5rem;
+        }
+        
+        .cinematic-step-desc {
+          font-size: 0.9rem;
+        }
+        
+        .cinematic-step-btn {
+          margin: 0 auto;
+        }
+        
+        .cinematic-img {
+          max-height: 400px;
+          object-fit: cover;
+        }
+        
+        .cinematic-header-title {
+          font-size: 1.4rem;
+        }
+      }
+      
+      @media (max-width: 600px) {
+        .cinematic-section {
+          padding: 2rem 0;
+        }
+        
+        .cinematic-step-title {
+          font-size: 1.3rem;
+        }
+        
+        .cinematic-container {
+          gap: 1.5rem;
+        }
+      }
+      
+      /* Keep existing styles */
       .detail-section-hd { display:flex; align-items:center; gap:0.8rem; margin:2.5rem 0 1.2rem; padding-bottom:0.6rem; border-bottom:1px solid rgba(201,168,76,0.18); }
       .detail-section-glyph { font-size:1.3rem; color:var(--gold); }
-      .detail-section-hd h3 { font-family:'Amiri',serif; font-size:1.4rem; color:var(--gold-light); }
+      .detail-section-hd h2, .detail-section-hd h3 { font-family:'Amiri',serif; font-size:1.4rem; color:var(--gold-light); margin:0; }
       .detail-places-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:0.5rem; }
       .detail-place-card { background:var(--stone); border:1px solid rgba(201,168,76,0.1); border-right:2px solid var(--gold-dark); padding:1.4rem; transition:border-color 0.3s; }
       .detail-place-card:hover { border-color:rgba(201,168,76,0.35); border-right-color:var(--gold); }
@@ -419,7 +789,6 @@ function openDetail(id, skipHash = false) {
       .detail-place-title { font-family:'Amiri',serif; font-size:1.05rem; color:var(--gold-light); margin-bottom:0.5rem; }
       .detail-place-text { font-size:0.82rem; color:var(--sand-dark); line-height:1.85; }
       .detail-video-wrap { border:1px solid rgba(201,168,76,0.15); overflow:hidden; margin-bottom:0.5rem; }
-      /* ===== PYRAMID GROUPS ===== */
       .pyramid-groups-wrap { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:0.5rem; }
       .pyramid-group-card { background:var(--stone); border:1px solid rgba(201,168,76,0.12); overflow:hidden; transition:border-color 0.4s, transform 0.3s; }
       .pyramid-group-card:hover { border-color:rgba(201,168,76,0.45); transform:translateY(-3px); }
@@ -435,7 +804,6 @@ function openDetail(id, skipHash = false) {
       .pg-el { display:flex; flex-direction:column; gap:0.1rem; padding:0.45rem 0; border-bottom:1px solid rgba(201,168,76,0.06); }
       .pg-el-name { font-size:0.8rem; color:var(--sand); }
       .pg-el-detail { font-size:0.7rem; color:var(--gold-dark); letter-spacing:0.05em; }
-      /* ===== ARCH ELEMENTS 13 ===== */
       .arch-elements-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:0.9rem; margin-bottom:0.5rem; }
       .arch-el-card { background:var(--stone); border:1px solid rgba(201,168,76,0.1); border-top:2px solid var(--gold-dark); padding:1.1rem; position:relative; transition:border-color 0.3s, transform 0.3s; }
       .arch-el-card:hover { border-color:rgba(201,168,76,0.4); border-top-color:var(--gold); transform:translateY(-2px); }
@@ -444,55 +812,66 @@ function openDetail(id, skipHash = false) {
       .arch-el-icon { font-size:1.5rem; display:block; margin-bottom:0.5rem; text-align:center; }
       .arch-el-title { font-family:'Amiri',serif; font-size:0.95rem; color:var(--gold-light); margin-bottom:0.4rem; text-align:center; }
       .arch-el-desc { font-size:0.75rem; color:var(--sand-dark); line-height:1.7; text-align:center; }
-      @media(max-width:900px){
+      .king-card { display: flex; gap: 1rem; background: rgba(201,168,76,0.05); padding: 1rem; margin: 1rem 0; border-left: 3px solid var(--gold); }
+      .king-seal { font-size: 2rem; }
+      .king-name { font-family: 'Amiri', serif; font-size: 1.2rem; color: var(--gold-light); }
+      .king-title { font-size: 0.75rem; color: var(--gold-dark); letter-spacing: 0.1em; }
+      .king-desc { font-size: 0.85rem; color: var(--sand-dark); margin-top: 0.3rem; }
+      .passage-list { display: flex; flex-direction: column; gap: 2rem; }
+      .passage-block { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; background: var(--stone); border: 1px solid rgba(201,168,76,0.1); padding: 1rem; }
+      .passage-block.reverse { direction: rtl; }
+      .passage-block.reverse .passage-text-wrap { direction: ltr; text-align: left; }
+      .passage-img-wrap { overflow: hidden; background: #1a1a2e; }
+      .passage-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(20%) brightness(0.8); transition: transform 0.4s; }
+      .passage-block:hover .passage-img { transform: scale(1.02); filter: sepia(0%) brightness(1); }
+      .passage-num { font-size: 0.7rem; color: var(--gold-dark); letter-spacing: 0.15em; margin-bottom: 0.2rem; }
+      .passage-title { font-family: 'Amiri', serif; font-size: 1.1rem; color: var(--gold-light); margin-bottom: 0.5rem; }
+      .passage-body { font-size: 0.85rem; color: var(--sand-dark); line-height: 1.7; margin-bottom: 0.5rem; }
+      .passage-tag { font-size: 0.7rem; color: var(--gold); opacity: 0.7; display: inline-block; border-top: 1px solid rgba(201,168,76,0.2); padding-top: 0.3rem; }
+      .complex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; margin: 1rem 0; }
+      .complex-card { background: var(--stone); border: 1px solid rgba(201,168,76,0.1); overflow: hidden; }
+      .complex-img { width: 100%; height: 180px; object-fit: cover; filter: sepia(15%) brightness(0.8); }
+      .complex-body { padding: 1rem; }
+      .complex-title { font-family: 'Amiri', serif; font-size: 1rem; color: var(--gold-light); margin-bottom: 0.3rem; }
+      .complex-desc { font-size: 0.8rem; color: var(--sand-dark); line-height: 1.6; }
+      .sphinx-block { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+      .sphinx-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(20%) brightness(0.7); }
+      .sphinx-info { display: flex; flex-direction: column; gap: 1rem; }
+      .sphinx-info-block { border-left: 2px solid var(--gold-dark); padding-left: 1rem; }
+      .sphinx-info-title { font-family: 'Amiri', serif; font-size: 1rem; color: var(--gold-light); margin-bottom: 0.3rem; }
+      .sphinx-info-text { font-size: 0.8rem; color: var(--sand-dark); line-height: 1.6; }
+      .inner-place-panel { position: fixed; top: 0; right: 0; width: 90%; max-width: 900px; height: 100vh; background: var(--obsidian); z-index: 1000; overflow-y: auto; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); box-shadow: -5px 0 30px rgba(0,0,0,0.5); }
+      .inner-place-panel.active { transform: translateX(0); }
+      .ipp-close { position: fixed; top: 1rem; left: 1rem; z-index: 1010; width: 44px; height: 44px; border: 1px solid rgba(201,168,76,0.5); background: rgba(13,10,5,0.85); color: var(--gold-light); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; border-radius: 50%; backdrop-filter: blur(5px); }
+      .ipp-close:hover { background: var(--gold); color: var(--obsidian); border-color: var(--gold); }
+      .ipp-hero { position: relative; height: 50vh; min-height: 300px; overflow: hidden; background: #1a1a2e; }
+      .ipp-hero-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(15%) brightness(0.75); cursor: zoom-in; }
+      .ipp-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,10,5,0.3), rgba(13,10,5,0.15) 40%, rgba(13,10,5,0.88) 80%, var(--obsidian)); }
+      .ipp-hero-content { position: absolute; bottom: 2rem; left: 2rem; right: 2rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+      .ipp-hero-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+      .ipp-hero-title { font-family: 'Amiri', serif; font-size: clamp(1.8rem, 5vw, 3rem); color: var(--sand); margin: 0; }
+      .ipp-body { max-width: 800px; margin: 0 auto; padding: 2rem; }
+      .ipp-back-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.5rem; border: 1px solid rgba(201,168,76,0.3); color: var(--sand-dark); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; transition: all 0.3s; font-family: inherit; background: transparent; cursor: pointer; margin-bottom: 2rem; border-radius: 4px; }
+      .ipp-back-btn:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(201,168,76,0.1); }
+      .ipp-desc { font-size: 1rem; color: var(--sand-dark); line-height: 2.1; margin-bottom: 2.5rem; padding: 1.5rem 2rem; background: var(--stone); border: 1px solid rgba(201,168,76,0.12); border-radius: 4px; }
+      .ipp-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.8rem; margin-bottom: 2.5rem; }
+      .ipp-gallery-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: sepia(15%) brightness(0.85); transition: filter 0.4s, transform 0.3s; border: 1px solid rgba(201,168,76,0.1); cursor: zoom-in; border-radius: 4px; }
+      .ipp-gallery-img:hover { filter: sepia(0%) brightness(1); transform: scale(0.98); }
+      .ipp-map-btn { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.85rem 2rem; border: 1px solid var(--gold); color: var(--gold-light); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.12em; transition: all 0.4s; font-family: inherit; background: transparent; cursor: pointer; border-radius: 4px; }
+      .ipp-map-btn:hover { background: var(--gold); color: var(--obsidian); box-shadow: 0 0 30px rgba(201,168,76,0.2); }
+      .ipp-map-section { text-align: center; padding: 1rem 0 2rem; }
+      @media (max-width: 900px) {
         .pyramid-groups-wrap { grid-template-columns:1fr; }
         .pg-img-wrap { height:220px; }
+        .sphinx-block { grid-template-columns: 1fr; }
       }
-      @media(max-width:700px){
+      @media (max-width: 700px) {
         .detail-places-grid { grid-template-columns:1fr 1fr; }
         .arch-elements-grid { grid-template-columns:repeat(2,1fr); }
       }
-      @media(max-width:480px){
+      @media (max-width: 480px) {
         .detail-places-grid { grid-template-columns:1fr; }
         .arch-elements-grid { grid-template-columns:1fr 1fr; }
-      }
-      /* ===== CLICKABLE INNER PLACES ===== */
-      .detail-place-card.clickable { cursor:pointer; padding:0; overflow:hidden; display:flex; flex-direction:column; transition:border-color 0.4s, transform 0.4s, box-shadow 0.4s; }
-      .detail-place-card.clickable:hover { transform:translateY(-5px); box-shadow:0 8px 30px rgba(201,168,76,0.12); }
-      .place-card-img-wrap { position:relative; height:160px; overflow:hidden; }
-      .place-card-img { width:100%; height:100%; object-fit:cover; filter:sepia(20%) brightness(0.78); transition:filter 0.5s, transform 0.5s; }
-      .detail-place-card.clickable:hover .place-card-img { filter:sepia(5%) brightness(0.92); transform:scale(1.06); }
-      .place-card-img-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(13,10,5,0.7),transparent 50%); }
-      .place-card-body { padding:1.2rem; flex:1; display:flex; flex-direction:column; }
-      .place-card-body .detail-place-text { flex:1; }
-      .place-card-cta { display:inline-block; margin-top:0.8rem; font-size:0.75rem; color:var(--gold); letter-spacing:0.1em; transition:color 0.3s; }
-      .detail-place-card.clickable:hover .place-card-cta { color:var(--gold-light); }
-      /* ===== INNER PLACE PANEL ===== */
-      .inner-place-panel { position:fixed; inset:0; background:var(--obsidian); z-index:700; overflow-y:auto; opacity:0; pointer-events:none; transition:opacity 0.4s; }
-      .inner-place-panel.active { opacity:1; pointer-events:all; }
-      .ipp-close { position:fixed; top:1.2rem; left:1.5rem; z-index:800; width:44px; height:44px; border:1px solid rgba(201,168,76,0.5); background:rgba(13,10,5,0.85); color:var(--gold-light); font-size:1.2rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s; }
-      .ipp-close:hover { background:var(--gold); color:var(--obsidian); }
-      .ipp-hero { position:relative; height:50vh; min-height:300px; overflow:hidden; }
-      .ipp-hero-img { width:100%; height:100%; object-fit:cover; filter:sepia(15%) brightness(0.75); cursor:zoom-in; }
-      .ipp-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(13,10,5,0.3),rgba(13,10,5,0.15) 40%,rgba(13,10,5,0.88) 80%,var(--obsidian)); }
-      .ipp-hero-content { position:absolute; bottom:2rem; right:3rem; left:3rem; }
-      .ipp-hero-icon { font-size:2.5rem; display:block; margin-bottom:0.6rem; }
-      .ipp-hero-title { font-family:'Amiri',serif; font-size:clamp(1.8rem,4vw,3rem); color:var(--sand); text-shadow:0 2px 15px rgba(0,0,0,0.7); }
-      .ipp-body { max-width:1000px; margin:0 auto; padding:2.5rem; }
-      .ipp-desc { font-size:1rem; color:var(--sand-dark); line-height:2.1; margin-bottom:2.5rem; padding:1.5rem 2rem; background:var(--stone); border:1px solid rgba(201,168,76,0.12); border-right:3px solid var(--gold-dark); }
-      .ipp-gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.8rem; margin-bottom:2.5rem; }
-      .ipp-gallery-img { width:100%; aspect-ratio:4/3; object-fit:cover; filter:sepia(15%) brightness(0.85); transition:filter 0.4s, transform 0.3s; border:1px solid rgba(201,168,76,0.1); cursor:zoom-in; }
-      .ipp-gallery-img:hover { filter:sepia(0%) brightness(1); transform:scale(0.98); }
-      .ipp-map-btn { display:inline-flex; align-items:center; gap:0.7rem; padding:0.85rem 2rem; border:1px solid var(--gold); color:var(--gold-light); text-decoration:none; font-size:0.9rem; letter-spacing:0.12em; transition:all 0.4s; font-family:inherit; background:transparent; cursor:pointer; }
-      .ipp-map-btn:hover { background:var(--gold); color:var(--obsidian); box-shadow:0 0 30px rgba(201,168,76,0.2); }
-      .ipp-map-section { text-align:center; padding:2rem 0; }
-      .ipp-back-btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.5rem; border:1px solid rgba(201,168,76,0.3); color:var(--sand-dark); text-decoration:none; font-size:0.8rem; letter-spacing:0.1em; transition:all 0.3s; font-family:inherit; background:transparent; cursor:pointer; margin-bottom:2rem; }
-      .ipp-back-btn:hover { border-color:var(--gold); color:var(--gold-light); }
-      @media(max-width:780px) {
-        .ipp-hero { height:40vh; min-height:250px; }
-        .ipp-hero-content { right:1.5rem; left:1.5rem; bottom:1.5rem; }
-        .ipp-body { padding:1.5rem; }
-        .ipp-gallery { grid-template-columns:1fr; }
       }
     `;
     document.head.appendChild(style);
@@ -503,71 +882,9 @@ function openDetail(id, skipHash = false) {
   document.body.style.overflow = 'hidden';
 }
 
-function openInnerPlace(siteId, placeIdx) {
-  const s = sites.find(x => x.id === siteId);
-  if (!s || !s.innerPlaces) return;
-  const l = currentLang;
-  const place = s.innerPlaces[l][placeIdx];
-  if (!place) return;
-
-  const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
-  const backLbl = l === 'ar' ? '→ العودة' : '← 返回';
-  const galleryLbl = l === 'ar' ? 'معرض الصور' : '图片画廊';
-  const locLbl = l === 'ar' ? 'الموقع على الخريطة' : '地图位置';
-
-  // Format description text with proper line breaks
-  const formattedDescription = formatTextWithLineBreaks(place.text);
-
-  let panel = document.getElementById('innerPlacePanel');
-  if (!panel) {
-    panel = document.createElement('div');
-    panel.className = 'inner-place-panel';
-    panel.id = 'innerPlacePanel';
-    document.body.appendChild(panel);
-  }
-
-  panel.innerHTML = `
-    <button class="ipp-close" onclick="closeInnerPlace()">✕</button>
-    <div class="ipp-hero" style="${(place.images && place.images.length > 0) ? '' : 'background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 250px;'}">
-      ${place.images && place.images.length > 0 ? `<img class="ipp-hero-img" src="${place.images[0]}" alt="${place.title}" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">` : ''}
-      <div class="ipp-hero-overlay"></div>
-      <div class="ipp-hero-content">
-        <span class="ipp-hero-icon" style="${(place.images && place.images.length > 0) ? '' : 'font-size: 64px; display: block; margin-bottom: 15px;'}">${place.icon}</span>
-        <h1 class="ipp-hero-title">${place.title}</h1>
-      </div>
-    </div>
-    <div class="ipp-body">
-      <button class="ipp-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
-      <div class="ipp-desc">${formattedDescription}</div>
-      ${(place.images || []).length > 0 ? `
-        <div class="detail-section-hd"><span class="detail-section-glyph">📸</span><h3>${galleryLbl}</h3></div>
-        <div class="ipp-gallery">
-          ${place.images.map((img, idx) => `<img class="ipp-gallery-img" src="${img}" loading="lazy" alt="${place.title}" onclick="openLightbox(this, null, 0)" style="cursor: zoom-in;">`).join('')}
-        </div>
-      ` : ''}
-      ${place.mapUrl ? `
-        <div class="detail-section-hd"><span class="detail-section-glyph">🗺</span><h3>${locLbl}</h3></div>
-        <div class="ipp-map-section">
-          <a href="${place.mapUrl}" target="_blank" rel="noopener" class="ipp-map-btn">${mapLbl}</a>
-        </div>
-      ` : ''}
-    </div>
-  `;
-
-  panel.classList.add('active');
-  panel.scrollTop = 0;
-}
-
-function closeInnerPlace() {
-  const panel = document.getElementById('innerPlacePanel');
-  if (panel) panel.classList.remove('active');
-}
-
 function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('active');
   document.body.style.overflow = '';
-
-  // Try to go back safely without ruining history if we came directly
   const sId = window.location.hash.replace('#site-', '');
   const s = sites.find(x => x.id === sId);
   if (s) {
@@ -577,7 +894,24 @@ function closeDetail() {
   }
 }
 
-// ===== SECTION NAV =====
+// Open lightbox with gallery array
+function openLightbox(galleryArray, startIndex = 0) {
+  if (!galleryArray || galleryArray.length === 0) return;
+  lbGallery = [...galleryArray];
+  lbIndex = startIndex;
+  const imgEl = document.getElementById('lightboxImg');
+  if (imgEl) {
+    imgEl.src = lbGallery[lbIndex];
+  }
+  const overlay = document.getElementById('lightboxOverlay');
+  if (overlay) {
+    overlay.classList.add('active');
+  }
+  document.body.style.overflow = 'hidden';
+  updateLightboxButtons();
+}
+
+// ===== SECTION NAV, LANGUAGE, MOBILE MENU, LIGHTBOX, ROUTER =====
 function showSection(name, skipHash = false) {
   if (!skipHash) { currentRoute = name; window.location.hash = currentRoute; }
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
@@ -586,7 +920,6 @@ function showSection(name, skipHash = false) {
   const idx = { home: 0, civs: 1, museums: 2, about: 3, team: 4 }[name];
   document.querySelectorAll('.nav-link')[idx]?.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  // trigger fade-ins
   setTimeout(() => {
     document.querySelectorAll('#sec-' + name + ' .fade-in').forEach(el => el.classList.add('visible'));
   }, 100);
@@ -596,7 +929,6 @@ function showSection(name, skipHash = false) {
   if (name === 'team') renderTeam();
 }
 
-// ===== LANGUAGE =====
 function setLang(lang) {
   currentLang = lang;
   document.documentElement.setAttribute('data-lang', lang);
@@ -607,61 +939,46 @@ function setLang(lang) {
     b.classList.toggle('active', b.textContent.trim() === (lang === 'ar' ? 'عربي' : '中文'));
   });
 
-  // Update logo
   document.getElementById('logo-text').textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
   document.getElementById('logo-sub').textContent = lang === 'ar' ? 'حضارات خالدة' : '永恒的文明';
   const mobileLogo = document.getElementById('mobile-logo-text');
   if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
 
-  // Update nav links (desktop and mobile)
   document.querySelectorAll('[data-ar]').forEach(el => {
     if (el.tagName === 'A' || el.classList.contains('nav-link') || el.classList.contains('mobile-nav-link')) {
       el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.zh;
     }
   });
-
-  // Update all data-ar / data-zh elements
   document.querySelectorAll('[data-ar]').forEach(el => {
     if (el.tagName !== 'BUTTON') {
       el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.zh;
     }
   });
-
-  // Filter buttons
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.textContent = lang === 'ar' ? b.dataset.ar : b.dataset.zh;
   });
-
-  // Footer
   document.getElementById('footer-left').textContent = lang === 'ar' ? '© 2024 أثر — جميع الحقوق محفوظة' : '© 2024 Athar — 版权所有';
   document.getElementById('footer-right').textContent = lang === 'ar' ? 'صُنع بشغف للحضارة' : '为文明而生';
 
-  // Re-render regions or current region sites
   if (window._currentRegionId) {
     openRegion(window._currentRegionId);
   } else {
     renderRegions();
   }
-
-  // Re-render current section
   const activeSec = document.querySelector('.page-section.active')?.id?.replace('sec-', '');
   if (activeSec === 'civs') renderCivs();
   if (activeSec === 'museums') renderMuseums();
   if (activeSec === 'team') renderTeam();
 }
 
-// ===== MOBILE MENU =====
 function toggleMobileMenu() {
   const sidebar = document.getElementById('mobileSidebar');
   const overlay = document.getElementById('mobileOverlay');
   const menuBtn = document.querySelector('.mobile-menu-btn');
-
   if (sidebar && overlay) {
     sidebar.classList.toggle('active');
     overlay.classList.toggle('active');
     if (menuBtn) menuBtn.classList.toggle('active');
-
-    // Prevent body scroll when menu is open
     if (sidebar.classList.contains('active')) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -670,92 +987,17 @@ function toggleMobileMenu() {
   }
 }
 
-// ===== LIGHTBOX SYSTEM - WORKING VERSION WITH SWIPE =====
 let lbGallery = [];
 let lbIndex = 0;
 let lbTouchStart = 0;
 let lbTouchEnd = 0;
 
-function openLightbox(clickedImgElement, customGallery = null, customIndex = 0) {
-  const overlay = document.getElementById('lightboxOverlay');
-  const imgEl = document.getElementById('lightboxImg');
-
-  if (!overlay || !imgEl) return;
-
-  // Try to find all images in the same gallery container
-  let galleryImages = [];
-
-  if (customGallery && customGallery.length > 0) {
-    // Case 1: We received a custom gallery array
-    galleryImages = customGallery;
-    lbIndex = customIndex;
-  } else {
-    // Case 2: Find the parent gallery container from the clicked image
-    let galleryContainer = null;
-    let clickedElement = clickedImgElement;
-
-    // Check if clicked image is inside .ipp-gallery (inner places)
-    if (clickedElement.closest && clickedElement.closest('.ipp-gallery')) {
-      galleryContainer = clickedElement.closest('.ipp-gallery');
-    }
-    // Check if inside .detail-gallery (main site gallery)
-    else if (clickedElement.closest && clickedElement.closest('.detail-gallery')) {
-      galleryContainer = clickedElement.closest('.detail-gallery');
-    }
-    // Check if inside .ipp-body (inner place hero or single image)
-    else if (clickedElement.closest && clickedElement.closest('.ipp-body')) {
-      // Try to get all gallery images from the ipp-gallery inside same panel
-      const ippGallery = clickedElement.closest('.ipp-body')?.querySelector('.ipp-gallery');
-      if (ippGallery) {
-        galleryContainer = ippGallery;
-      } else {
-        // Just this single image + hero image
-        const heroImg = clickedElement.closest('.ipp-body')?.querySelector('.ipp-hero-img');
-        if (heroImg && heroImg.src !== clickedElement.src) {
-          galleryImages = [heroImg.src, clickedElement.src];
-        } else {
-          galleryImages = [clickedElement.src];
-        }
-        lbIndex = 0;
-      }
-    }
-
-    // If we found a container, collect all images from it
-    if (galleryContainer && !galleryImages.length) {
-      const allImgs = galleryContainer.querySelectorAll('img');
-      galleryImages = Array.from(allImgs).map(img => img.src);
-
-      // Find the index of clicked image
-      lbIndex = galleryImages.findIndex(src => src === clickedElement.src);
-      if (lbIndex === -1) lbIndex = 0;
-    }
-    // No container found, just this image
-    else if (!galleryImages.length) {
-      galleryImages = [clickedElement.src];
-      lbIndex = 0;
-    }
-  }
-
-  // Store gallery globally
-  lbGallery = [...galleryImages];
-
-  // Show first image
-  imgEl.src = lbGallery[lbIndex];
-  overlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-
-  updateLightboxButtons();
-}
-
 function navigateLightbox(direction) {
   if (lbGallery.length <= 1) return;
-
   let newIndex = lbIndex + direction;
   if (newIndex < 0) newIndex = lbGallery.length - 1;
   if (newIndex >= lbGallery.length) newIndex = 0;
-
   lbIndex = newIndex;
-
   const imgEl = document.getElementById('lightboxImg');
   if (imgEl) {
     imgEl.style.opacity = '0.3';
@@ -764,7 +1006,6 @@ function navigateLightbox(direction) {
       imgEl.style.opacity = '1';
     }, 150);
   }
-
   updateLightboxButtons();
 }
 
@@ -772,7 +1013,6 @@ function updateLightboxButtons() {
   const prevBtn = document.getElementById('lightboxPrev');
   const nextBtn = document.getElementById('lightboxNext');
   const counter = document.getElementById('lightboxCounter');
-
   if (prevBtn) {
     if (lbGallery.length <= 1) {
       prevBtn.style.opacity = '0.3';
@@ -786,7 +1026,6 @@ function updateLightboxButtons() {
       nextBtn.style.pointerEvents = 'auto';
     }
   }
-
   if (counter && lbGallery.length > 0) {
     counter.textContent = `${lbIndex + 1} / ${lbGallery.length}`;
   }
@@ -804,49 +1043,25 @@ function closeLightbox() {
   }
 }
 
-// ===== SWIPE HANDLERS FOR LIGHTBOX =====
 function handleLightboxTouchStart(e) {
   const lb = document.getElementById('lightboxOverlay');
   if (lb && lb.classList.contains('active')) {
     lbTouchStart = e.changedTouches[0].screenX;
   }
 }
-
 function handleLightboxTouchEnd(e) {
   const lb = document.getElementById('lightboxOverlay');
   if (lb && lb.classList.contains('active')) {
     lbTouchEnd = e.changedTouches[0].screenX;
     const diff = lbTouchStart - lbTouchEnd;
     const threshold = 50;
-
     if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        navigateLightbox(1);  // Swipe left -> next
-      } else {
-        navigateLightbox(-1); // Swipe right -> previous
-      }
+      if (diff > 0) navigateLightbox(1);
+      else navigateLightbox(-1);
     }
   }
 }
 
-// ===== GLOBAL IMAGE CLICK HANDLER =====
-function setupGlobalImageClickHandler() {
-  document.addEventListener('click', function(e) {
-    if (e.target.tagName === 'IMG' &&
-        e.target.src &&
-        e.target.src.includes('images/') &&
-        !e.target.closest('.lightbox-overlay')) {
-
-      // Don't open lightbox if clicking on map images or tiny icons
-      if (e.target.closest('.ipp-map-section')) return;
-      if (e.target.classList && e.target.classList.contains('team-img')) return;
-
-      openLightbox(e.target, null, 0);
-    }
-  });
-}
-
-// ===== ROUTER =====
 let currentRoute = "";
 function handleRoute() {
   const hash = window.location.hash.replace('#', '');
@@ -856,10 +1071,7 @@ function handleRoute() {
     showSection('home', true);
     return;
   }
-
-  // Close any open innerPlace if we are navigating backwards
   closeInnerPlace();
-
   if (['home', 'civs', 'museums', 'about', 'team'].includes(hash)) {
     document.getElementById('detailOverlay').classList.remove('active');
     document.body.style.overflow = '';
@@ -881,67 +1093,33 @@ function handleRoute() {
   }
 }
 
-// ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup touch handlers for lightbox
   document.addEventListener('touchstart', handleLightboxTouchStart);
   document.addEventListener('touchend', handleLightboxTouchEnd);
-
-  // Setup global image click handler
-  setupGlobalImageClickHandler();
-
-  // Handle hash routing
-  if (window.location.hash) {
-    handleRoute();
-  }
-
-  // Initial render
+  if (window.location.hash) handleRoute();
   renderRegions();
-
-  // Scroll effects
   const header = document.getElementById('mainHeader');
   window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 60));
-
-  // Scroll animations
   const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
-
-  // Hero CTA
   document.querySelector('.hero-cta')?.addEventListener('click', e => {
     e.preventDefault();
     document.getElementById('sites').scrollIntoView({ behavior: 'smooth' });
   });
 });
 
-// ===== GLOBAL KEYBOARD HANDLER =====
 document.addEventListener('keydown', (e) => {
-  // Handle lightbox navigation with arrows
   const lb = document.getElementById('lightboxOverlay');
   if (lb && lb.classList.contains('active')) {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      navigateLightbox(-1);
-      return;
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      navigateLightbox(1);
-      return;
-    }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); navigateLightbox(-1); return; }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); navigateLightbox(1); return; }
   }
-
-  // Handle Escape key
   if (e.key === 'Escape') {
     const lb = document.getElementById('lightboxOverlay');
-    if (lb && lb.classList.contains('active')) {
-      closeLightbox();
-      return;
-    }
+    if (lb && lb.classList.contains('active')) { closeLightbox(); return; }
     const ipp = document.getElementById('innerPlacePanel');
-    if (ipp && ipp.classList.contains('active')) {
-      closeInnerPlace();
-    } else {
-      closeDetail();
-    }
+    if (ipp && ipp.classList.contains('active')) closeInnerPlace();
+    else closeDetail();
   }
 });
 
