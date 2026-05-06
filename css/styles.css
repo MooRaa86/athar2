@@ -221,16 +221,24 @@ nav {
     animation: rotateSlow 70s linear infinite;
 }
 
-.hero-ring::before {
-    content: '𓂀 𓃀 𓅱 𓆣 𓇯 𓈖 𓉐 𓊪 𓋴 𓌂 𓍯 𓎼 𓏏 𓐍 𓀀 𓁿';
+.hero-ring-svg {
     position: absolute;
-    top: -1rem;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    font-size: 1rem;
-    color: rgba(201, 168, 76, 0.18);
-    letter-spacing: 0.5rem;
-    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    direction: ltr;
+    unicode-bidi: bidi-override;
+}
+
+.ring-text {
+    font-size: 1.15rem;
+    fill: rgba(201, 168, 76, 0.18);
+    letter-spacing: 0.3em;
+    direction: ltr;
+    unicode-bidi: bidi-override;
 }
 
 @keyframes rotateSlow {
