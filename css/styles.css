@@ -1198,6 +1198,42 @@ footer {
     letter-spacing: 0.1em;
 }
 
+.footer-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.footer-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(201, 168, 76, 0.55);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(201, 168, 76, 0.15);
+    border-radius: 20px;
+}
+
+.footer-whatsapp:hover {
+    color: var(--gold-light);
+    border-color: rgba(201, 168, 76, 0.4);
+}
+
+.footer-whatsapp svg {
+    flex-shrink: 0;
+}
+
+/* X close button: flip position for LTR (Chinese) */
+html[data-lang="zh"] .detail-close {
+    left: auto;
+    right: 1.5rem;
+}
+
 /* ===== FADE IN ===== */
 .fade-in {
     opacity: 0;

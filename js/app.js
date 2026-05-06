@@ -171,7 +171,7 @@ function openInnerPlace(siteId, placeIdx) {
   currentRoute = 'innerplace-' + siteId + '-' + placeIdx;
   window.location.hash = currentRoute;
 
-  const backLbl = l === 'ar' ? '← العودة إلى الموقع الرئيسي' : '← 返回主站点';
+  // Back label removed - user navigates back manually
   const galleryLbl = l === 'ar' ? 'معرض الصور' : '图片画廊';
   const locLbl = l === 'ar' ? 'الموقع على الخريطة' : '地图位置';
   const mapLbl = l === 'ar' ? '📍 عرض الموقع على الخريطة' : '📍 在地图上查看位置';
@@ -209,7 +209,7 @@ function openInnerPlace(siteId, placeIdx) {
           <span class="inner-place-hero-icon">${place.icon}</span>
           <h1 class="inner-place-hero-title">${place.title}</h1>
         </div>
-        <button class="inner-place-back-btn" onclick="closeInnerPlace()">${backLbl}</button>
+
       </div>
       <div class="inner-place-body">
         <div class="inner-place-description">
@@ -264,7 +264,7 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
     <div class="inner-places-cinematic">
       <div class="cinematic-header">
         <span class="cinematic-header-glyph">𓂀</span>
-        <h2 class="cinematic-header-title">${isRtl ? 'رحلة الاستكشاف' : 'Exploration Journey'}</h2>
+        <h2 class="cinematic-header-title">${isRtl ? 'رحلة الاستكشاف' : '探索之旅'}</h2>
         <div class="cinematic-header-line"></div>
       </div>
       <div class="cinematic-sections">
@@ -276,8 +276,8 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
     const imgHeight = imageHeightPattern[idx % imageHeightPattern.length];
     const isLargeImage = imgHeight >= 480;
 
-    const label = isRtl ? `الخطوة ${placeNumber}` : `Step ${placeNumber}`;
-    const moreLabel = isRtl ? 'استكشف المكان' : 'Explore Place';
+    const label = isRtl ? `مكان ${placeNumber}` : `地点 ${placeNumber}`;
+    const moreLabel = isRtl ? 'استكشف المكان' : '探索地点';
 
     let description = p.text;
     if (description.length > 200) {
@@ -1123,10 +1123,10 @@ function setLang(lang) {
     b.classList.toggle('active', b.textContent.trim() === (lang === 'ar' ? 'عربي' : '中文'));
   });
 
-  document.getElementById('logo-text').textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
+  document.getElementById('logo-text').textContent = lang === 'ar' ? 'دُروب' : '途';
   document.getElementById('logo-sub').textContent = lang === 'ar' ? 'حضارات خالدة' : '永恒的文明';
   const mobileLogo = document.getElementById('mobile-logo-text');
-  if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'أثـر' : '遗 迹';
+  if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'دُروب' : '途';
 
   document.querySelectorAll('[data-ar]').forEach(el => {
     if (el.tagName === 'A' || el.classList.contains('nav-link') || el.classList.contains('mobile-nav-link')) {
@@ -1141,7 +1141,7 @@ function setLang(lang) {
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.textContent = lang === 'ar' ? b.dataset.ar : b.dataset.zh;
   });
-  document.getElementById('footer-left').textContent = lang === 'ar' ? '© 2024 أثر — جميع الحقوق محفوظة' : '© 2024 Athar — 版权所有';
+  document.getElementById('footer-left').textContent = lang === 'ar' ? '© 2024 دُروب — جميع الحقوق محفوظة' : '© 2024 途 — 版权所有';
   document.getElementById('footer-right').textContent = lang === 'ar' ? 'صُنع بشغف للحضارة' : '为文明而生';
 
   if (window._currentRegionId) {
@@ -1275,9 +1275,10 @@ function handleRoute() {
     }
   } else if (hash.startsWith('innerplace-')) {
     // Handle direct navigation to inner place
-    const parts = hash.replace('innerplace-', '').split('-');
-    const siteId = parts[0];
-    const placeIdx = parseInt(parts[1]);
+    const remainder = hash.replace('innerplace-', '');
+    const lastDash = remainder.lastIndexOf('-');
+    const siteId = remainder.substring(0, lastDash);
+    const placeIdx = parseInt(remainder.substring(lastDash + 1));
     const s = sites.find(x => x.id === siteId);
     if (s) {
       showSection('home', true);

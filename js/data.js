@@ -5,14 +5,14 @@ const T = {
   ar: {
     historical: 'نبذة تاريخية', amazing: 'حقائق مذهلة',
     gallery: 'معرض الصور', siteInfo: 'معلومات الموقع', timeline: 'الخط الزمني',
-    copyright: '© 2024 أثر — جميع الحقوق محفوظة',
-    logoText: 'أثـر'
+    copyright: '© 2024 دُروب — جميع الحقوق محفوظة',
+    logoText: 'دُروب'
   },
   zh: {
     historical: '历史简介', amazing: '惊人事实',
     gallery: '图片画廊', siteInfo: '遗址信息', timeline: '时间线',
-    copyright: '© 2024 Athar — 版权所有',
-    logoText: '遗 迹'
+    copyright: '© 2024 途 — 版权所有',
+    logoText: '途'
   }
 };
 let currentLang = 'ar';
