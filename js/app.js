@@ -1116,10 +1116,10 @@ function setLang(lang) {
     b.classList.toggle('active', b.textContent.trim() === (lang === 'ar' ? 'عربي' : '中文'));
   });
 
-  document.getElementById('logo-text').textContent = lang === 'ar' ? 'دُروب' : '途';
+  document.getElementById('logo-text').textContent = lang === 'ar' ? 'رفيق كيميت' : '古埃及旅伴';
   document.getElementById('logo-sub').textContent = lang === 'ar' ? 'حضارات خالدة' : '永恒的文明';
   const mobileLogo = document.getElementById('mobile-logo-text');
-  if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'دُروب' : '途';
+  if (mobileLogo) mobileLogo.textContent = lang === 'ar' ? 'رفيق كيميت' : '古埃及旅伴';
 
   document.querySelectorAll('[data-ar]').forEach(el => {
     if (el.tagName === 'A' || el.classList.contains('nav-link') || el.classList.contains('mobile-nav-link')) {
@@ -1134,7 +1134,7 @@ function setLang(lang) {
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.textContent = lang === 'ar' ? b.dataset.ar : b.dataset.zh;
   });
-  document.getElementById('footer-left').textContent = lang === 'ar' ? '© 2024 دُروب — جميع الحقوق محفوظة' : '© 2024 途 — 版权所有';
+  document.getElementById('footer-left').textContent = lang === 'ar' ? '© 2024 رفيق كيميت — جميع الحقوق محفوظة' : '© 2024 古埃及旅伴 — 版权所有';
   document.getElementById('footer-right').textContent = lang === 'ar' ? 'صُنع بشغف للحضارة' : '为文明而生';
 
   if (window._currentRegionId) {
