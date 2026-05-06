@@ -6124,18 +6124,22 @@ const sites = [
     innerPlaces: [
       {
         icon: '🌳', title: 'الحدائق التاريخية', text: 'المنتزه بقصورها الإسلامية الفلورانسية، والشلالات ببحيراتها الثلاث، وأنطونيادس بطرزها المتنوعة وتماثيلها ومسرحها التاريخي.'
+        ,images: ['images/alex1.jpg']
       },
       {
         icon: '🕌', title: 'المعالم الدينية المتنوعة', text: 'مساجد عريقة كالمرسي أبو العباس والقائد إبراهيم، وكنائس كمارمينا العجائبي والكاتدرائية المرقسية أقدم كنائس مصر.'
+        ,images: ['images/alex2.jpg','images/alex3.jpg']
       },
       {
         icon: '🏺', title: 'المتاحف والمقابر القومية', text: 'متاحف تضم مجوهرات وآثار تعود لكل العصور، ومقابر صخرية عريقة كالشاطبي ومصطفى كامل وكوم الشقافة والأنفوشي.'
+        ,images: ['images/alex4.jpg']
       },
       {
         icon: '🌊', title: 'شواطئ ومناطق الإسكندرية', text: 'أحياء تنبض بالحياة كمحطة الرمل وبحري، وشواطئ مميزة كالمعمورة وستانلي وكليوباترا تطل على البحر المتوسط المعتدل.'
+      ,images: ['images/alex5.jpg']
       }
     ],
-    gallery: ['images/alex.jpg']
+    gallery: ['images/alex.jpg','images/alex1.jpg','images/alex2.jpg','images/alex3.jpg','images/alex4.jpg']
   },
   {
     id: 'alexandria-library', cat: 'egypt', region: 'alexandria', wide: true,
@@ -6553,18 +6557,22 @@ const sites = [
     innerPlaces: [
       {
         icon: '👑', title: 'قصر الحرملك', text: 'المقر الملكي الصيفي، ذو الطوابق الثلاثة المليئة بالتحف الفرنسية، والحجرة البلورية وغرفة ولي العهد.'
+      ,images: ['images/qasr1.jpg']
       },
       {
         icon: '🏛️', title: 'قصر السلاملك', text: 'أول القصور وأُسس لاستقبال الرجال والاستراحة، تحول لفندق سياحي فاخر يطل على خليج المنتزه.'
+      ,images:['images/qasr2.jpg']
       },
       {
         icon: '🌿', title: 'الصوبة الملكية', text: 'أُنشئت عام 1934 بـ 3000 متر مربع وتضم أندر نباتات الظل الاستوائية والمحتفظة برونقها للآن.'
+      ,images: ['images/qasr3.jpg']
       },
       {
         icon: '⏱️', title: 'برج الساعة وكشك الشاي', text: 'برج ساعة مميز تخرج منه 4 تماثيل للملك فاروق، وكشك شاي روماني الطراز متصل بجسر قوطي.'
+      ,images: ['images/qasr7.jpg']
       }
     ],
-    gallery: ['images/qasr1.jpg']
+    gallery: ['images/qasr1.jpg','images/alex6.jpg','images/qasr2.jpg','images/qasr3.jpg','images/qasr7.jpg']
   },
   {
     id: 'qaitbay-citadel', cat: 'egypt', region: 'alexandria', wide: true,

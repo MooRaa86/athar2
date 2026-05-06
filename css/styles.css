@@ -103,9 +103,9 @@ header.scrolled {
     letter-spacing: 0.2em;
 }
 
-opacity: 1;
+/* opacity: 1;
 pointer-events: all;
-}
+} */
 
 nav {
     display: flex;
