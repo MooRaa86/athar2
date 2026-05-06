@@ -398,13 +398,13 @@ function openDetail(id, skipHash = false) {
             <p class="quote-text">${quoteTxt}</p>
             <p class="quote-source">${quoteSrc}</p>
           </div>
-          <h3>${t.amazing}</h3>
-          <ul class="detail-facts">${facts.map(f => `<li>${f}</li>`).join('')}</ul>
+          ${facts && facts.length ? `<h3>${t.amazing}</h3>
+          <ul class="detail-facts">${facts.map(f => `<li>${f}</li>`).join('')}</ul>` : ''}
         </div>
         <div class="detail-sidebar">
-          <h3>${t.siteInfo}</h3>
-          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}<\/td><td class="info-value">${v}<\/td><\/tr>`).join('')}<\/table>
-          <div class="timeline-section">
+          ${info && info.length ? `<h3>${t.siteInfo}</h3>
+          <table class="info-table">${info.map(([k, v]) => `<tr><td class="info-label">${k}<\/td><td class="info-value">${v}<\/td><\/tr>`).join('')}<\/table>` : ''}
+          ${tl2 && tl2.length ? `<div class="timeline-section">
             <h3 style="margin-top:2rem">${t.timeline}</h3>
             ${tl2.map(item => `
               <div class="timeline-item">
@@ -414,7 +414,7 @@ function openDetail(id, skipHash = false) {
                   <div class="timeline-event">${item.e || item.event}</div>
                 </div>
               </div>`).join('')}
-          </div>
+          </div>` : ''}
         </div>
       </div>
 
