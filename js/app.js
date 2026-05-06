@@ -200,13 +200,10 @@ function openInnerPlace(siteId, placeIdx) {
       <div class="inner-place-hero">
         ${allImages.length > 0 ?
       `<img class="inner-place-hero-img" src="${allImages[0]}" alt="${place.title}" onclick="openLightbox([${allImages.map(img => `'${img}'`).join(',')}], 0)">` :
-      `<div class="inner-place-hero-placeholder">
-             <span class="inner-place-hero-icon">${place.icon}</span>
-           </div>`
+      `<div class="inner-place-hero-placeholder"></div>`
   }
         <div class="inner-place-hero-overlay"></div>
         <div class="inner-place-hero-content">
-          <span class="inner-place-hero-icon">${place.icon}</span>
           <h1 class="inner-place-hero-title">${place.title}</h1>
         </div>
 
@@ -301,9 +298,7 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
               <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
                 ${imgUrl ?
         `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
-        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;">
-                     <span class="placeholder-icon">${p.icon}</span>
-                   </div>`
+        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;"></div>`
     }
                 <div class="cinematic-img-overlay"></div>
                 <div class="cinematic-img-number">${placeNumber}</div>
@@ -314,9 +309,7 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
               <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
                 ${imgUrl ?
         `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
-        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;">
-                     <span class="placeholder-icon">${p.icon}</span>
-                   </div>`
+        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;"></div>`
     }
                 <div class="cinematic-img-overlay"></div>
                 <div class="cinematic-img-number">${placeNumber}</div>

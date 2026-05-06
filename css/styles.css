@@ -1198,11 +1198,10 @@ footer {
     letter-spacing: 0.1em;
 }
 
-.footer-center {
+.footer-left-col {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
+    gap: 0.4rem;
 }
 
 .footer-whatsapp {
