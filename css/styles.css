@@ -119,10 +119,11 @@ nav {
     font-size: 0.88rem;
     letter-spacing: 0.08em;
     padding: 0.5rem 1.2rem;
-
-    transition: color 0.3s;
+    cursor: pointer;
+    transition: color 0.3s, background 0.3s;
     position: relative;
     white-space: nowrap;
+    border-radius: 6px;
 }
 
 .nav-link::after {
@@ -140,6 +141,7 @@ nav {
 .nav-link:hover,
 .nav-link.active {
     color: var(--gold-light);
+    background: rgba(201, 168, 76, 0.08);
 }
 
 .nav-link:hover::after,
@@ -2242,6 +2244,7 @@ html[dir="ltr"] .mobile-sidebar.active {
     opacity: 1;
     visibility: visible;
     min-height: 44px;
+    cursor: pointer;
 }
 html[dir="ltr"] .mobile-nav-link {
     border-right: none;
