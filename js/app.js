@@ -1056,6 +1056,11 @@ function openDetail(id, skipHash = false) {
 }
 
 function closeDetail() {
+  // If viewing an inner place, go back to the parent site detail (one step back)
+  if (isViewingInnerPlace) {
+    closeInnerPlace();
+    return;
+  }
   document.getElementById('detailOverlay').classList.remove('active');
   document.body.style.overflow = '';
   const sId = window.location.hash.replace('#site-', '');
