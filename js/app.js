@@ -254,9 +254,6 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
   if (!innerPlacesData || !innerPlacesData.length) return '';
   const isRtl = lang === 'ar';
 
-  // Alternate image sizes for visual rhythm
-  const imageHeightPattern = [520, 320, 480, 280, 560, 350, 500, 300];
-
   return `
     <div class="inner-places-cinematic">
       <div class="cinematic-header">
@@ -264,70 +261,39 @@ function renderInnerPlaces(siteId, innerPlacesData, lang) {
         <h2 class="cinematic-header-title">${isRtl ? 'رحلة الاستكشاف' : '探索之旅'}</h2>
         <div class="cinematic-header-line"></div>
       </div>
-      <div class="cinematic-sections">
+      <div class="passage-list">
         ${innerPlacesData.map((p, idx) => {
     const imgUrl = p.images && p.images[0] ? p.images[0] : null;
-    const placeNumber = String(idx + 1).padStart(2, '0');
-    const isEven = idx % 2 === 0;
-    const textFirst = isEven;
-    const imgHeight = imageHeightPattern[idx % imageHeightPattern.length];
-    const isLargeImage = imgHeight >= 480;
-
-    const label = isRtl ? `مكان ${placeNumber}` : `地点 ${placeNumber}`;
+    const placeNum = String(idx + 1).padStart(2, '0');
+    const isReverse = idx % 2 !== 0;
+    const label     = isRtl ? `مكان ${placeNum}` : `地点 ${placeNum}`;
     const moreLabel = isRtl ? 'استكشف المكان' : '探索地点';
 
-    let description = p.text;
-    if (description.length > 200) {
-      description = description.substring(0, 200) + '...';
-    }
+
+    // اقتطع الوصف بنفس طريقة passage-body
+    let description = p.text || '';
+    if (description.length > 300) description = description.substring(0, 300) + '...';
+
 
     return `
-      <div class="cinematic-section cinematic-section-${idx}" data-step="${placeNumber}">
-        <div class="cinematic-container">
-          ${textFirst ? `
-            <div class="cinematic-text-col fade-in-up">
-              <div class="cinematic-step-label">${label}</div>
-              <h3 class="cinematic-step-title">${p.title}</h3>
-              <div class="cinematic-step-desc">${description.replace(/\n/g, '<br>')}</div>
+          <div class="passage-block${isReverse ? ' reverse' : ''}">
+            <div class="passage-img-wrap">
+              ${imgUrl
+        ? `<img class="passage-img" src="${imgUrl}" loading="lazy" alt="${p.title}"
+                       onclick="openInnerPlace('${siteId}', ${idx})">`
+        : `<div class="passage-img-placeholder"></div>`
+    }
+            </div>
+            <div class="passage-text-wrap">
+              <div class="passage-num">${label}</div>
+              <div class="passage-title">${p.title}</div>
+              <p class="passage-body">${description.replace(/\n/g, '<br>')}</p>
               <button class="cinematic-step-btn" onclick="openInnerPlace('${siteId}', ${idx})">
                 <span>${moreLabel}</span>
                 <span class="btn-arrow">${isRtl ? '←' : '→'}</span>
               </button>
             </div>
-            <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up delay-1">
-              <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
-                ${imgUrl ?
-        `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
-        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;"></div>`
-    }
-                <div class="cinematic-img-overlay"></div>
-                <div class="cinematic-img-number">${placeNumber}</div>
-              </div>
-            </div>
-          ` : `
-            <div class="cinematic-img-col ${isLargeImage ? 'img-large' : 'img-small'} fade-in-up">
-              <div class="cinematic-img-wrapper" onclick="openInnerPlace('${siteId}', ${idx})">
-                ${imgUrl ?
-        `<img class="cinematic-img" src="${imgUrl}" alt="${p.title}" style="height: ${imgHeight}px; object-fit: cover;">` :
-        `<div class="cinematic-img-placeholder" style="height: ${imgHeight}px;"></div>`
-    }
-                <div class="cinematic-img-overlay"></div>
-                <div class="cinematic-img-number">${placeNumber}</div>
-              </div>
-            </div>
-            <div class="cinematic-text-col fade-in-up delay-1">
-              <div class="cinematic-step-label">${label}</div>
-              <h3 class="cinematic-step-title">${p.title}</h3>
-              <div class="cinematic-step-desc">${description.replace(/\n/g, '<br>')}</div>
-              <button class="cinematic-step-btn" onclick="openInnerPlace('${siteId}', ${idx})">
-                <span>${moreLabel}</span>
-                <span class="btn-arrow">${isRtl ? '←' : '→'}</span>
-              </button>
-            </div>
-          `}
-        </div>
-      </div>
-    `;
+          </div>`;
   }).join('')}
       </div>
     </div>
