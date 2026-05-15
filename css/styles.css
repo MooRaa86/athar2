@@ -1704,6 +1704,15 @@ img {
     grid-template-columns: 1fr 280px;
 }
 
+
+/*.passage-block.reverse .passage-img-wrap {*/
+/*    order: 2;*/
+/*}*/
+
+/*.passage-block.reverse .passage-text-wrap {*/
+/*    order: 1;*/
+/*}*/
+
 .passage-img-wrap {
     overflow: hidden;
     position: relative;
