@@ -4499,7 +4499,7 @@ const sites = [
               '\n' +
               '7- 工程精度：\n' +
               '井道与斜坡通道之间的石墙非常薄，\n' +
-              '在某些地方厚度仅约20厘米。', images: null },
+              '在某些地方厚度仅约20厘米。', images: ['images/salah-eldin-cairo5.jpg','images/salah-eldin-cairo4.jpg','images/salah-eldin-cairo6.jpg','images/salah-eldin-cairo7.jpg','images/salah-eldin-cairo8.jpg'] },
         { icon: '👑', title: '珠宝宫', text: '珠宝宫\n' +
               '\n' +
               '珠宝宫是萨拉丁城堡中最重要的宫殿之一。\n' +
@@ -4608,7 +4608,7 @@ const sites = [
               '\n' +
               '此外还有：\n' +
               '重达1000公斤的吊灯（法国赠送），\n' +
-              '以及意大利赠送的王座。', images: null },
+              '以及意大利赠送的王座。', images: ['images/salah-eldin-cairo10.jpg','images/salah-eldin-cairo9.jpg','images/salah-eldin-cairo11.jpg'] },
         { icon: '🕌', title: '阿布拉克宫', text: '由苏丹纳赛尔·穆罕默德建造，仿照大马士革的宫殿，\n' +
               '\n' +
               '被认为是最豪华的马穆鲁克宫殿之一。\n' +
@@ -4624,7 +4624,7 @@ const sites = [
               '位于穆罕默德·阿里清真寺所在的广场。\n' +
               '\n' +
               '如今仅剩：\n' +
-              '一些巨大的拱形结构遗迹。', images: null },
+              '一些巨大的拱形结构遗迹。', images: ['images/salah-eldin-cairo13.jpg'] },
         { icon: '🕌', title: '后宫（军事博物馆）', text: '该宫殿位于萨拉丁城堡西北侧。\n' +
               '\n' +
               '穆罕默德·阿里于1826年（1242年伊历）下令建造。\n' +
@@ -4641,7 +4641,7 @@ const sites = [
               '（军事博物馆成立于1937年，\n' +
               '最初位于开罗市中心旧战争部大楼，\n' +
               '后迁至花园城临时地点，\n' +
-              '并于1949年11月迁入城堡内的后宫宫殿）。', images: null },
+              '并于1949年11月迁入城堡内的后宫宫殿）。', images: ['images/salah-eldin-cairo15.jpg','images/salah-eldin-cairo14.jpg'] },
         { icon: '🕌', title: '纳西尔·穆罕默德·本·卡劳文清真寺', text: '它是开罗萨拉丁城堡内一座重要的历史清真寺，\n' +
               '由苏丹纳西尔·穆罕默德·本·卡劳文于1318年在马穆鲁克时期建造，\n' +
               '并作为城堡的官方清真寺，苏丹们在此进行星期五礼拜。\n' +
@@ -4659,7 +4659,7 @@ const sites = [
               '\n' +
               '其柱子来自不同历史时期\n' +
               '（法老、托勒密、罗马），\n' +
-              '赋予其丰富的历史特色。', images: null },
+              '赋予其丰富的历史特色。', images: ['images/salah-eldin-cairo12.jpg','images/salah-eldin-cairo20.jpg'] },
         { icon: '💧', title: '苏莱曼帕夏清真寺', text: '它是开罗萨拉丁城堡内最古老的清真寺之一，\n' +
               '由苏莱曼帕夏·哈迪姆于1528年在奥斯曼时期初期建造。\n' +
               '\n' +
@@ -4669,7 +4669,7 @@ const sites = [
               '\n' +
               '它还拥有一座细长的奥斯曼式宣礼塔（类似铅笔形状），\n' +
               '被认为是埃及最早采用这种风格建造的清真寺之一，\n' +
-              '最初主要供城堡内的奥斯曼士兵使用。', images: null },
+              '最初主要供城堡内的奥斯曼士兵使用。', images: ['images/salah-eldin-cairo21.jpg'] },
         { icon: '🏛️', title: '穆罕默德·阿里清真寺', text: '它是开罗萨拉丁城堡内最著名的清真寺，\n' +
               '由穆罕默德·阿里帕夏于1830年至1848年建造，\n' +
               '因其墙壁覆盖白色大理石而被称为“雪花石膏清真寺”。\n' +
@@ -4690,13 +4690,13 @@ const sites = [
               '其中设有米哈拉布（朝向麦加）和讲坛，\n' +
               '并悬挂着大型水晶吊灯。\n' +
               '\n' +
-              '这使其成为埃及最重要和最著名的伊斯兰地标之一。', images: null },
+              '这使其成为埃及最重要和最著名的伊斯兰地标之一。', images: ['images/salah-eldin-cairo22.jpg','images/salah-eldin-cairo1.jpg','images/salah-eldin-cairo23.jpg'] },
         { icon: '🏛️', title: '交通博物馆（皇家汽车博物馆）', text: '成立于1983年，\n' +
               '馆内收藏了一批独特的皇家汽车，\n' +
               '这些车辆来自不同的历史时期，\n' +
               '从赫迪夫伊斯梅尔时代到法鲁克国王时期，\n' +
               '\n' +
-              '此外还展出其他珍贵的文物藏品。', images: null },
+              '此外还展出其他珍贵的文物藏品。', images: ['images/salah-eldin-cairo30.jpg','images/salah-eldin-cairo31.jpg','images/salah-eldin-cairo32.jpg'] },
         { icon: '🏛️', title: '警察博物馆', text: '警察博物馆位于开罗萨拉丁城堡内，毗邻军事博物馆，\n' +
               '被认为是记录埃及安全机构历史的重要博物馆之一。\n' +
               '\n' +
@@ -4717,7 +4717,7 @@ const sites = [
               '以及伪造货币样本和造假工具，\n' +
               '政治暗杀案件和伊斯梅利亚战役，\n' +
               '并介绍了阿德汉姆·沙尔卡维的故事\n' +
-              '以及文物警察在保护遗产方面的作用。', images: null },
+              '以及文物警察在保护遗产方面的作用。', images: ['images/salah-eldin-cairo16.jpg','images/salah-eldin-cairo17.jpg','images/salah-eldin-cairo18.jpg'] },
         { icon: '🏛️', title: '穆卡塔姆门', text: '这座古老的城门曾被称为穆卡塔姆门或山门，\n' +
               '因其毗邻穆卡塔姆塔并俯瞰通往穆卡塔姆山的道路，\n' +
               '如今被称为萨拉赫·萨利姆门。\n' +
@@ -4736,7 +4736,7 @@ const sites = [
               '尤其是在1955年修建萨拉赫·萨利姆公路时。\n' +
               '\n' +
               '近年，埃及最高文物委员会重新开放了该城门，\n' +
-              '以展示其历史和文化价值。', images: null },
+              '以展示其历史和文化价值。', images: ['images/salah-eldin-cairo24.jpg'] },
         { icon: '🚪', title: '城堡新门', text: '这座新门建于1827年，由穆罕默德·阿里帕夏修建，\n' +
               '用于取代旧的阶梯门和禁卫军之门，\n' +
               '因为旧门不适合车辆和火炮通过。\n' +
@@ -4757,7 +4757,7 @@ const sites = [
               '“يا مفتح الأبواب”（开启诸门者）。\n' +
               '\n' +
               '其下方还有一个装饰框，\n' +
-              '内写：“由阿卜杜勒·加法尔题写”。', images: null },
+              '内写：“由阿卜杜勒·加法尔题写”。', images: ['images/salah-eldin-cairo25.jpg'] },
         { icon: '🚪', title: '中门（鼓手塔）', text: '又称“鼓手塔”，\n' +
               '位于萨拉丁城堡内，\n' +
               '处于城堡公共入口通道与皇家庭院之间，\n' +
@@ -4774,7 +4774,7 @@ const sites = [
               '该门没有明确的奠基铭文，\n' +
               '但推测穆罕默德·阿里帕夏\n' +
               '在1826年左右对其及周围城墙进行了修复，\n' +
-              '当时正值他整修东侧城门时期。', images: null },
+              '当时正值他整修东侧城门时期。', images: ['images/salah-eldin-cairo26.jpg'] },
         { icon: '🚪', title: '阿兹卜门', text: '位于苏丹哈桑清真寺和里法伊清真寺前，\n' +
               '是城堡中最宏伟、最美丽的伊斯兰城门之一，\n' +
               '其结构类似于开罗的法图赫门和祖韦拉门。\n' +
@@ -4790,7 +4790,7 @@ const sites = [
               '\n' +
               '后来由赫迪夫伊斯梅尔重新修建，\n' +
               '并在翻修鲁梅拉广场时赋予其现有的哥特式风格，\n' +
-              '同时在外部增加了双层台阶。', images: null },
+              '同时在外部增加了双层台阶。', images: ['images/salah-eldin-cairo34.jpg'] },
         { icon: '🚪', title: '萨拉丁城堡的塔楼', text: '城堡的城墙上共有13座塔楼，\n' +
               '为城堡士兵和居民提供持续的防御保护。\n' +
               '\n' +
@@ -4810,7 +4810,7 @@ const sites = [
               '\n' +
               '而南部城墙区域被称为“城堡”，\n' +
               '同样为矩形结构，\n' +
-              '长510米，宽270米。', images: null }
+              '长510米，宽270米。', images: ['images/salah-eldin-cairo27.jpg','images/salah-eldin-cairo35.jpg','images/salah-eldin-cairo36.jpg'] }
       ]
     },
     gallery: [
