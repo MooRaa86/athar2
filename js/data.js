@@ -7897,11 +7897,11 @@ const civs = [
 
 const teamMembers = [
   { nameAr: 'Zeyad Hatem Farouk', nameZh: '大鹏', img: 'images/Zeyad Hatem Farouk - 大鹏.jpeg' },
-  { nameAr: 'Rewan Mostafa Aly', nameZh: '李江江', img: 'images/Rewan Mostafa Aly -  李江江.jpeg' },
+  { nameAr: 'Malak mohamed', nameZh: '珍珠', img: 'images/Malak mohamed - 珍珠.jpeg' },
+  { nameAr: 'Habiba Ahmed korani', nameZh: '李爱', img: 'images/Habiba Ahmed korani - 李爱.jpeg' },
   { nameAr: 'Bayna Badwie AbdElhamed', nameZh: '白娜', img: 'images/Bayna Badwie AbdElhamed - 白娜.jpeg' },
   { nameAr: 'Basmala Badwie AbdElhamed', nameZh: '娜娜', img: 'images/Basmala Badwie AbdElhamed -娜娜.jpeg' },
-  { nameAr: 'Habiba Ahmed korani', nameZh: '李爱', img: 'images/Habiba Ahmed korani - 李爱.jpeg' },
-  { nameAr: 'Malak mohamed', nameZh: '珍珠', img: 'images/Malak mohamed - 珍珠.jpeg' },
+  { nameAr: 'Rewan Mostafa Aly', nameZh: '李江江', img: 'images/Rewan Mostafa Aly -  李江江.jpeg' },
   { nameAr: 'Mohamed Emam', nameZh: '穆瑿', img: 'images/Mohamed Emam - 穆瑿.jpeg' }
 ];
 
